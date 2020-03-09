@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>FH Admin</title>
+    <!-- HTML5 Shim and Respond.js IE10 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 10]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="author" content="FH Admin QQ313596790" />
+
+    <link rel="icon" href="../../../assets/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../../../assets/fonts/material/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../../../assets/fonts/fontawesome/css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="../../../assets/plugins/animation/css/animate.min.css">
+    <link rel="stylesheet" href="../../../assets/css/style.css">
+    <link rel="stylesheet" href="../../../assets/css/bootstrap/bootstrap.min.css">
+
+    <!-- vue -->
+    <script src="../../../assets/js-vue/vue.js"></script>
+    <!--全局配置-->
+    <script src="../../../assets/js-v/config.js"></script>
+
+</head>
+<body>
+
+<div id="main">
+  
+    <div style="border-top: 1px #cdcdcd solid">
+		<div class="jumbotron" style="display: flex;flex-direction: column; align-items:center;justify-content:center">
+		  <!-- <h1>{{pd.TITLE}}</h1> -->
+		  <div style="width: 200px;">
+			  <h2 >通知</h2>
+		  </div>
+		  <div style="width: 80%;min-height: 80%;">
+			    <p>{{pd.CONTENT}}</p>
+		  </div>
+		  
+		
+		</div>
+		<div class="jumbotron" style="margin-left:30px; flex;flex-direction: column; justify-content:center;padding-bottom: 0!important;">
+		  <div class="page-header">
+		      <h3>附件</h3>
+		  </div>
+		  <div>
+			<h4 v-show="varList.length==0" style="font-weight: bold;">没有附件</h4>
+			<ul  v-show="varList.length!=0" v-for="(data,index) in varList" style="margin-bottom: 20px">
+			    <a href="#" v-on:click="downloadAtt(data.ID,data.URL)" style="text-decoration:none;"><li  style="list-style: none;" >{{index+1}}.{{data.ORIGINAL_NAME}}</li></a>
+			</ul>
+		  </div>
+		</div>
+		<div id="" class="jumbotron" style="margin-left:30px; flex;flex-direction: column; justify-content:center" v-show="user=='admin'">
+			<div class="page-header">
+			    <h3>通知详细</h3>	
+			</div>
+			<div  class="table-responsive" style="clear:both;width: 100%;">
+				<table  class="table table-striped text-nowrap" id="exampleTable" >
+				</table>
+			</div>
+		
+		</div>
+        
+
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript" src="../../../assets/js/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../../assets/js/pre-loader.js"></script>
+<script src="../../../assets/plugins/sweetalert/js/sweetalert.min.js"></script>
+<!-- 表单验证提示 -->
+<script src="../../../assets/js/jquery.tips.js"></script>
+
+<!-- bootstrap_table js -->
+	
+	<script src="../../../assets/js/bootstarp/bootstrap.js"></script>
+	<script src="../../../assets/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+	<script src="../../../assets/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+
+<script type="text/javascript" src="../../../assets/js-v/inform/preview.js"></script>
+</body>
+</html>
