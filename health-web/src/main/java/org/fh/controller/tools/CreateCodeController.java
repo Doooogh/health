@@ -1,29 +1,18 @@
 package org.fh.controller.tools;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.fh.controller.base.BaseController;
 import org.fh.entity.Page;
 import org.fh.entity.PageData;
 import org.fh.service.tools.CreateCodeService;
-import org.fh.util.DateUtil;
-import org.fh.util.DelFileUtil;
-import org.fh.util.FileDownload;
-import org.fh.util.FileZip;
-import org.fh.util.Freemarker;
-import org.fh.util.PathUtil;
-import org.fh.util.Tools;
+import org.fh.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * 说明：代码生成器
@@ -113,13 +102,18 @@ public class CreateCodeController extends BaseController {
 		root.put("fieldList", fieldList);
 		root.put("faobject", faobject.toUpperCase());				//主附结构用，主表名
 		root.put("TITLE", TITLE);									//说明
-		root.put("packageName", packageName);						//包名
+//		packageName=packageName.replace("/",".");   //可以实现多个包在同一自定的文件夹中
+		root.put("packageName", packageName.replace("/","."));						//包名
+		if(packageName.contains("/")){
+			root.put("hasParent","true");
+		}
+		root.put("packageName2", packageName);							//包名
 		root.put("objectName", objectName);							//类名
 		root.put("objectNameLower", objectName.toLowerCase());		//类名(全小写)
 		root.put("objectNameUpper", objectName.toUpperCase());		//类名(全大写)
 		root.put("tabletop", tabletop);								//表前缀	
 		root.put("nowDate", new Date());							//当前日期
-		
+
 		DelFileUtil.delFolder(PathUtil.getProjectpath()+"admin/createcode"); //生成代码前,先清空之前生成的代码
 		/* ============================================================================================= */
 		String filePath = "admin/createcode/code/";						//存放路径
@@ -158,7 +152,13 @@ public class CreateCodeController extends BaseController {
 		/*生成html页面*/
 		Freemarker.printFile("html_list_Template.ftl", root, "views/"+packageName+"/"+objectName.toLowerCase()+"/"+objectName.toLowerCase()+"_list.html", filePath, ftlPath);
 		Freemarker.printFile("html_edit_Template.ftl", root, "views/"+packageName+"/"+objectName.toLowerCase()+"/"+objectName.toLowerCase()+"_edit.html", filePath, ftlPath);
-	
+		/*生成js页面*/
+		Freemarker.printFile("js_list_Template.ftl", root, "assets/js-v/"+packageName+"/"+objectName.toLowerCase()+"/"+objectName.toLowerCase()+"_list.js", filePath, ftlPath);
+		Freemarker.printFile("js_edit_Template.ftl", root, "assets/js-v/"+packageName+"/"+objectName.toLowerCase()+"/"+objectName.toLowerCase()+"_edit.js", filePath, ftlPath);
+
+//		Freemarker.printFile("html_approveform_edit_js_Template.ftl", root, "views/"+packageName+"/"+objectName.toLowerCase()+"/"+objectName.toLowerCase()+".js", filePath, ftlPath);
+		/*生成表单添加页面*/
+//		Freemarker.printFile("controller_add_Template.ftl", root, "views/"+packageName+"/"+objectName.toLowerCase()+"/"+objectName.toLowerCase()+".txt", filePath, ftlPath);
 		/*生成说明文档*/
 		Freemarker.printFile("docTemplate.ftl", root, "部署说明.doc", filePath, ftlPath);
 		

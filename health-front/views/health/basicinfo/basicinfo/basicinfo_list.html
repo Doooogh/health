@@ -13,17 +13,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="author" content="FH Admin QQ313596790" />
+		<link rel="icon" href="../../../../assets/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../../../../assets/fonts/material/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../../../../assets/fonts/fontawesome/css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="../../../../assets/plugins/animation/css/animate.min.css">
+    <link rel="stylesheet" href="../../../../assets/css/style.css">
 
-    <link rel="icon" href="../../../assets/images/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="../../../assets/fonts/material/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="../../../assets/fonts/fontawesome/css/fontawesome-all.min.css">
-    <link rel="stylesheet" href="../../../assets/plugins/animation/css/animate.min.css">
-    <link rel="stylesheet" href="../../../assets/css/style.css">
-    
     <!-- vue -->
-	<script src="../../../assets/js-vue/vue.js"></script>
+	<script src="../../../../assets/js-vue/vue.js"></script>
     <!--全局配置-->
-    <script src="../../../assets/js-v/config.js"></script>
+    <script src="../../../../assets/js-v/config.js"></script>
+
     
 </head>
 
@@ -84,9 +84,16 @@
 													<thead>
 														<tr>
 															<th style="width:50px;">NO</th>
-														<#list fieldList as var>
-															<th>${var[2]}</th>
-														</#list>
+															<th>姓名</th>
+															<th>性别</th>
+															<th>生日</th>
+															<th>身高</th>
+															<th>体重</th>
+															<th>过敏史</th>
+															<th>疾病史</th>
+															<th>家族病史</th>
+															<th>其他信息</th>
+															<th>数据信息</th>
 															<th>操作</th>
 														</tr>
 													</thead>
@@ -95,16 +102,27 @@
 														<template v-for="(data,index) in varList">
 															<tr>
 																<td>{{page.showCount*(page.currentPage-1)+index+1}}</td>
-														<#list fieldList as var>
-															<#if var[1] == 'String' && var[7] != 'null'>
-																<td>{{data.DNAME${var_index+1}}}</td>
-															<#else>
-																<td>{{data.${var[0]}}}</td>
-															</#if>
-														</#list>
+																<td>{{data.UNAME}}</td>
+																<td>{{data.DNAME2}}</td>
+																<td>{{data.BIRTHDAY}}</td>
+																<td>{{data.HEIGHT}}</td>
+																<td>{{data.WEIGHT}}</td>
+																<td>{{data.ALLERGIC_HISTORY}}</td>
+																<td>{{data.DISEASES_HISTORY}}</td>
+																<td>{{data.FA_DISEASES_HISTORY}}</td>
+																<td>{{data.OTHERS}}</td>
 																<td>
-																	<a v-show="edit" title="修改" v-on:click="goEdit(data.${objectNameUpper}_ID)" style="cursor:pointer;"><i class="feather icon-edit-2"></i></a>
-								                 					<a v-show="del"  title="删除" v-on:click="goDel(data.${objectNameUpper}_ID)" style="cursor:pointer;"><i class="feather icon-x"></i></a>
+																	<template v-if="data.IS_NEW=='1'">
+																		<span class="badge badge-success" >最新数据</span>
+																	</template>
+																	<template v-else>
+																		<span class="badge badge-warning" >不是最新数据</span>
+																	</template>
+																</td>
+																<td>
+																	
+																	<a v-show="edit&&data.IS_NEW=='1'" title="修改" v-on:click="goEdit(data.BASICINFO_ID)" style="cursor:pointer;"><i class="feather icon-edit-2"></i></a>
+								                 					<a v-show="del"  title="删除" v-on:click="goDel(data.BASICINFO_ID)" style="cursor:pointer;"><i class="feather icon-x"></i></a>
 																</td>
 															</tr>
 														</template>
@@ -136,11 +154,13 @@
             </div>
         </div>
     <!-- [ 主内容区 ] end -->
-    
-<script type="text/javascript" src="../../../assets/js/jquery-1.7.2.js"></script>
-<script type="text/javascript" src="../../../assets/js/pre-loader.js"></script>
-<script src="../../../assets/plugins/sweetalert/js/sweetalert.min.js"></script>
+
+
+<script type="text/javascript" src="../../../../assets/js/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../../../assets/js/pre-loader.js"></script>
+<script src="../../../../assets/plugins/sweetalert/js/sweetalert.min.js"></script>
 <!-- 表单验证提示 -->
-<script src="../../../assets/js/jquery.tips.js"></script>
+<script src="../../../../assets/js/jquery.tips.js"></script>
+<script src="../../../../assets/js-v/health/basicinfo/basicinfo/basicinfo_list.js"></script>
 </body>
 </html>

@@ -32,7 +32,14 @@ public interface DictionariesService {
 	 * @throws Exception
 	 */
 	public PageData findById(PageData pd)throws Exception;
-	
+
+	/**
+	 * 根据父级英文名查找子类
+	 * @param NAME_EN
+	 * @return
+	 */
+	List<Dictionaries> listSubDictByParentNameEn(String NAME_EN);
+
 	/**通过编码获取数据
 	 * @param pd
 	 * @throws Exception

@@ -1,10 +1,10 @@
 package org.fh.mapper.dsno1.system;
 
-import java.util.List;
-
 import org.fh.entity.Page;
 import org.fh.entity.PageData;
 import org.fh.entity.system.Dictionaries;
+
+import java.util.List;
 
 /**
  * 说明：数据字典Mapper
@@ -32,7 +32,14 @@ public interface DictionariesMapper {
 	 * @throws Exception
 	 */
 	PageData findById(PageData pd);
-	
+
+	/**
+	 * 根据父级英文名查找子类
+	 * @param NAME_EN
+	 * @return
+	 */
+	List<Dictionaries> listSubDictByParentNameEn(String NAME_EN);
+
 	/**通过编码获取数据
 	 * @param pd
 	 * @throws Exception

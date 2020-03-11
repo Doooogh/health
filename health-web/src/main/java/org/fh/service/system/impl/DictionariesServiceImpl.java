@@ -80,6 +80,16 @@ public class DictionariesServiceImpl implements DictionariesService {
 	public PageData findById(PageData pd)throws Exception{
 		return dictionariesMapper.findById(pd);
 	}
+
+	/**
+	 * 根据父级英文名查找子类
+	 * @param NAME_EN
+	 * @return
+	 */
+	@Override
+	public List<Dictionaries> listSubDictByParentNameEn(String NAME_EN) {
+		return dictionariesMapper.listSubDictByParentNameEn(NAME_EN);
+	}
 	
 	/**通过编码获取数据
 	 * @param pd

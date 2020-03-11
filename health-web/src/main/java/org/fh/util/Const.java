@@ -26,5 +26,6 @@ public class Const {
 	public static final String FILEPATHIMG = "uploadFiles/imgs/";					//图片上传路径
 	
 	public static final String FILEACTIVITI = "uploadFiles/activitiFile/";			//工作流生成XML和PNG目录
-	
+
+	public static final String ROLE_IDS_ADMIN_RNUMBER="R20200311734825";   //普通管理员
 }

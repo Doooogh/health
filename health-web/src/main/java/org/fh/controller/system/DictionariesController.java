@@ -257,5 +257,32 @@ public class DictionariesController extends BaseController {
 		map.put("result", errInfo);				//返回结果
 		return map;
 	}
+
+	/**获取连级数据
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/getLevelsByNameEn")
+	@ResponseBody
+	public Object getLevelsByNameEn() throws Exception{
+		Map<String,Object> map = new HashMap<String,Object>();
+		String errInfo = "success";
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String NAME_EN = pd.getString("NAME_EN");
+		NAME_EN = Tools.isEmpty(NAME_EN)?"0":NAME_EN;
+		List<Dictionaries>	varList = dictionariesService.listSubDictByParentNameEn(NAME_EN); //用传过来的ID获取此ID下的子列表数据
+		List<PageData> pdList = new ArrayList<PageData>();
+		for(Dictionaries d :varList){
+			PageData pdf = new PageData();
+			pdf.put("DICTIONARIES_ID", d.getDICTIONARIES_ID());
+			pdf.put("BIANMA", d.getBIANMA());
+			pdf.put("NAME", d.getNAME());
+			pdList.add(pdf);
+		}
+		map.put("list", pdList);
+		map.put("result", errInfo);				//返回结果
+		return map;
+	}
 	
 }

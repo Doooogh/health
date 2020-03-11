@@ -183,7 +183,7 @@ var vm = new Vue({
     			$("#packageName").focus();
     			return false;
     		}else{
-    			var pat = new RegExp("^[A-Za-z]+$");
+    			/* var pat = new RegExp("^[A-Za-z]+$");
     			if(!pat.test($("#packageName").val())){
     				$("#packageName").tips({
     					side:3,
@@ -193,7 +193,7 @@ var vm = new Vue({
     		        });
     				$("#packageName").focus();
     				return false;
-    			}
+    			} */
     		}
     		if($("#objectName").val()==""){
     			$("#objectName").tips({
@@ -476,6 +476,10 @@ var vm = new Vue({
     			$("#form-field-radio33").attr("checked",true);
     			$("#form-field-radio33").click();
     			$("#dtype").val('Double');
+    		}else if(efieldarray[1] == 'Text'){
+    			$("#form-field-radio44").attr("checked",true);
+    			$("#form-field-radio44").click();
+    			$("#dtype").val('Text');
     		}else{
     			$("#form-field-radio3").attr("checked",true);
     			$("#form-field-radio3").click();
@@ -490,7 +494,11 @@ var vm = new Vue({
     			$("#form-field-radio5").click();
     			$("#isQian").val('否');
     		}
-    		$("#flength").val(efieldarray[5]);				//长度
+			if(efieldarray[1] == 'Text'){
+				$("#flength").val(2000);				//长度
+			}else{
+				$("#flength").val(efieldarray[5]);				//长度
+			}
     		$("#decimal").val(efieldarray[6]);				//小数点
     		if(efieldarray[7] == 'null'){
     			$("#dictionariesid").val('');				//数据字典ID
@@ -524,7 +532,9 @@ var vm = new Vue({
     			}
     			$("#decimal").val(2);
     			$("#decimal").attr("disabled",false);
-    		}else{
+    		}else if(value == 'Text'){
+				$("#flength").val(2000);
+			}else{
     			$("#flength").val(255);
     		}
     	},

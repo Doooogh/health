@@ -109,14 +109,16 @@
 </#list>
 		where 1=1
 		<if test="pd.KEYWORDS != null and pd.KEYWORDS != ''"><!-- 关键词检索 -->
+            <!--	根据需求自己加检索条件
 			and
 				(
-				<!--	根据需求自己加检索条件
+
 					字段1 LIKE CONCAT(CONCAT('%', ${r"#{pd.KEYWORDS})"},'%')
 					 or 
 					字段2 LIKE CONCAT(CONCAT('%', ${r"#{pd.KEYWORDS})"},'%') 
-				-->
+
 				)
+				-->
 		</if>
 	</select>
 	
@@ -138,6 +140,5 @@
                  ${r"#{item}"}
 		</foreach>
 	</delete>
-	
-	<!-- fh313596790qq(青苔) -->
+
 </mapper>

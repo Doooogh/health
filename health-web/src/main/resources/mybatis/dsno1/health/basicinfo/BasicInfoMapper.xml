@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.fh.mapper.dsno1.health.basicinfo.BasicInfoMapper">
+
+	<!--表名 -->
+	<sql id="tableName">
+		USER_BASICINFO
+	</sql>
+
+	<!--数据字典表名 -->
+	<sql id="dicTableName">
+		SYS_DICTIONARIES
+	</sql>
+
+	<!-- 字段 -->
+	<sql id="Field">
+		f.NAME,
+		f.SEX,
+		f.BIRTHDAY,
+		f.HEIGHT,
+		f.WEIGHT,
+		f.ALLERGIC_HISTORY,
+		f.DISEASES_HISTORY,
+		f.FA_DISEASES_HISTORY,
+		f.OTHERS,
+		f.USER_ID,
+		f.BASICINFO_ID,
+		f.CREATE_BY,
+		f.CREATE_DATE,
+		f.IS_DEL,
+		f.IS_NEW
+	</sql>
+
+	<!-- 字段用于新增 -->
+	<sql id="Field2">
+		NAME,
+		SEX,
+		BIRTHDAY,
+		HEIGHT,
+		WEIGHT,
+		ALLERGIC_HISTORY,
+		DISEASES_HISTORY,
+		FA_DISEASES_HISTORY,
+		OTHERS,
+		USER_ID,
+		BASICINFO_ID,
+		CREATE_BY,
+		CREATE_DATE,
+		IS_DEL,
+		IS_NEW
+	</sql>
+
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{NAME},
+		#{SEX},
+		#{BIRTHDAY},
+		#{HEIGHT},
+		#{WEIGHT},
+		#{ALLERGIC_HISTORY},
+		#{DISEASES_HISTORY},
+		#{FA_DISEASES_HISTORY},
+		#{OTHERS},
+		#{USER_ID},
+		#{BASICINFO_ID},
+		#{CREATE_BY},
+		#{CREATE_DATE},
+		#{IS_DEL},
+		#{IS_NEW}
+	</sql>
+
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into
+	<include refid="tableName"></include>
+		(
+	<include refid="Field2"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+
+	<update id="updateNew" parameterType="pd">
+		update
+		<include refid="tableName">
+		</include>
+		set IS_NEW=NULL where USER_ID=#{USER_ID}
+	</update>
+	<!-- 删除-->
+	<update id="delete" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set IS_DEL='1'
+		where
+			BASICINFO_ID = #{BASICINFO_ID}
+	</update>
+
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set
+			NAME = #{NAME},
+			SEX = #{SEX},
+			BIRTHDAY = #{BIRTHDAY},
+			HEIGHT = #{HEIGHT},
+			WEIGHT = #{WEIGHT},
+			ALLERGIC_HISTORY = #{ALLERGIC_HISTORY},
+			DISEASES_HISTORY = #{DISEASES_HISTORY},
+			FA_DISEASES_HISTORY = #{FA_DISEASES_HISTORY},
+			OTHERS = #{OTHERS},
+			USER_ID = #{USER_ID},
+			IS_NEW=#{IS_NEW}
+		where
+			BASICINFO_ID = #{BASICINFO_ID}
+	</update>
+
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from
+		<include refid="tableName"></include> f
+		where
+			f.BASICINFO_ID = #{BASICINFO_ID}
+	</select>
+
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+			d2.BIANMA BIANMA2,
+			d2.NAME DNAME2,
+			u.NAME AS UNAME,
+		<include refid="Field"></include>
+		from
+		<include refid="tableName"></include> f
+			left join
+			<include refid="dicTableName"></include> d2
+			on f.SEX = d2.BIANMA
+			left join sys_user u on f.USER_ID=u.USER_ID
+		where 1=1 AND F.IS_DEL IS NULL
+		<if test="pd.KEYWORDS != null and pd.KEYWORDS != ''"><!-- 关键词检索 -->
+			<!--	根据需求自己加检索条件-->
+			and
+				(
+					u.NAME LIKE CONCAT(CONCAT('%', #{pd.KEYWORDS}),'%')
+				)
+
+		</if>
+		<if test="pd.CREATE_BY !=null and pd.CREATE_BY!=''">
+			and f.CREATE_BY=#{pd.CREATE_BY}
+		</if>
+		ORDER BY IS_NEW desc, CREATE_DATE desc
+	</select>
+
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from
+		<include refid="tableName"></include> f
+		WHERE 1=1 AND f.IS_DEL IS NULL
+		<if test="pd.CREATE_BY !=null and pd.CREATE_BY!=''">
+			and f.CREATE_BY=#{pd.CREATE_BY}
+		</if>
+	</select>
+
+	<!-- 批量删除 -->
+	<update id="deleteAll" parameterType="String">
+		update
+		<include refid="tableName"></include>
+		set  IS_DEL ='1'
+		where 
+			BASICINFO_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</update>
+
+</mapper>

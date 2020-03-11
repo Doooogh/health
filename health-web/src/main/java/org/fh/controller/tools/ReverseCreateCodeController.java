@@ -1,11 +1,5 @@
 package org.fh.controller.tools;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.fh.controller.base.BaseController;
 import org.fh.entity.PageData;
@@ -13,6 +7,12 @@ import org.fh.util.DbFH;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 说明：代码生成器(反向生成)
@@ -81,6 +81,8 @@ public class ReverseCreateCodeController extends BaseController {
 				}
 			}else if(fieldType.contains("double") || fieldType.contains("numeric")){
 				sb.append("Double");
+			}else if(fieldType.contains("text")){
+				sb.append("Text");
 			}else if(fieldType.contains("date")){
 				sb.append("Date");
 			}else{
@@ -97,7 +99,11 @@ public class ReverseCreateCodeController extends BaseController {
 			sb.append(",fh,");
 			sb.append("无");																//默认值
 			sb.append(",fh,");
-			sb.append(fmap.get("fieldLength").toString());								//长度
+			if(fieldType.contains("text")){
+				sb.append("2000");
+			}else{
+				sb.append(fmap.get("fieldLength").toString());								//长度
+			}
 			sb.append(",fh,");
 			sb.append(fmap.get("fieldSccle").toString());								//小数点右边的位数
 			sb.append(",fh,");

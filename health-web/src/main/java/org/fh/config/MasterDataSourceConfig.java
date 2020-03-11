@@ -1,7 +1,6 @@
 package org.fh.config;
 
-import javax.sql.DataSource;
-
+import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -14,7 +13,7 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import javax.sql.DataSource;
 
 /**
  * 说明：第一数据源配置
@@ -26,7 +25,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 public class MasterDataSourceConfig {
 
     static final String PACKAGE = "org.fh.mapper.dsno1";								//master 目录
-    static final String MAPPER_LOCATION = "classpath:mybatis/dsno1/*/*.xml";			//扫描的 xml 目录
+    static final String MAPPER_LOCATION = "classpath*:mybatis/dsno1/**/*Mapper.xml";			//扫描的 xml 目录
     static final String CONFIG_LOCATION = "classpath:mybatis/dsno1/mybatis-config.xml"; //自定义的mybatis config 文件位置
     static final String TYPE_ALIASES_PACKAGE = "org.fh.entity"; 						//扫描的 实体类 目录
  

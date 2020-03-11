@@ -1,31 +1,17 @@
 package org.fh.controller.system;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.fh.controller.base.BaseController;
+import org.fh.entity.Page;
+import org.fh.entity.PageData;
 import org.fh.entity.system.Role;
+import org.fh.entity.system.User;
 import org.fh.service.system.FHlogService;
 import org.fh.service.system.RoleService;
 import org.fh.service.system.UeditorService;
 import org.fh.service.system.UsersService;
-import org.fh.util.Const;
-import org.fh.util.FileDownload;
-import org.fh.util.FileUpload;
-import org.fh.util.GetPinyin;
-import org.fh.util.Jurisdiction;
-import org.fh.util.ObjectExcelRead;
-import org.fh.util.ObjectExcelView;
-import org.fh.util.PathUtil;
-import org.fh.util.Tools;
-import org.fh.entity.Page;
-import org.fh.entity.PageData;
+import org.fh.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 说明：系统用户处理类
@@ -85,11 +77,47 @@ public class UsersController extends BaseController {
 		map.put("ROLE_ID", ROLE_ID);
 		map.put("page", page);
 		map.put("pd", pd);
+        String rnumbers = Jurisdiction.getRnumbers();
+        map.put("result", errInfo);
+		return map;
+	}
 
+
+	@RequestMapping("/getUserInfo")
+	@ResponseBody
+	public Object getUserInfo() throws Exception {
+		Map<String,Object> map = new HashMap<String,Object>();
+		String errInfo = "success";
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		User userInfo = usersService.getUserAndRoleById(pd.getString("USER_ID"));
+		map.put("userInfo",userInfo);
 		map.put("result", errInfo);
 		return map;
 	}
-	
+
+	/**获取所有用户并且判断是否是管理员
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/getAllUser")
+	@ResponseBody
+	public Object getAllUser() throws Exception {
+		Map<String,Object> map = new HashMap<String,Object>();
+		String errInfo = "success";
+		PageData pd = new PageData();
+		List<PageData> list = usersService.listAllUser(pd);
+		map.put("list",list);
+		if(Jurisdiction.getRnumbers().contains(Const.ROLE_IDS_ADMIN_RNUMBER)){
+			map.put("isAdmin",true);
+		}else{
+			map.put("userId",Jurisdiction.getUserId());
+		}
+		map.put("result", errInfo);
+		return map;
+	}
+
+
 	/**去新增用户页面
 	 * @return
 	 * @throws Exception
@@ -98,6 +126,20 @@ public class UsersController extends BaseController {
 	@RequiresPermissions("user:add")
 	@ResponseBody
 	public Object goAddUser()throws Exception{
+		Map<String,Object> map = new HashMap<String,Object>();
+		String errInfo = "success";
+		PageData pd = new PageData();
+		pd.put("ROLE_ID", "1");
+		List<Role> roleList = roleService.listAllRolesByPId(pd);		//列出所有系统用户角色
+		map.put("roleList", roleList);
+		map.put("result", errInfo);
+		return map;
+	}
+
+	@RequestMapping(value="/goAddUser2Roles")
+	@RequiresPermissions("user:add")
+	@ResponseBody
+	public Object goAddUser2Roles()throws Exception{
 		Map<String,Object> map = new HashMap<String,Object>();
 		String errInfo = "success";
 		PageData pd = new PageData();

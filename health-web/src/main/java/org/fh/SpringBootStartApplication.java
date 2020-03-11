@@ -1,10 +1,14 @@
 package org.fh;
 
+import org.activiti.spring.boot.SecurityAutoConfiguration;
 import org.apache.ibatis.session.SqlSession;
 import org.fh.config.MapperRefresh;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
@@ -21,6 +25,9 @@ import java.util.concurrent.Executors;
  * 作者：FH Admin Q313596790
  * 官网：www.fhadmin.org
  */
+@SpringBootApplication(exclude = SecurityAutoConfiguration.class)//去除冲突
+@MapperScan("org.fh.mapper")
+@EnableCaching
 public class SpringBootStartApplication extends SpringBootServletInitializer {
 
     @Autowired

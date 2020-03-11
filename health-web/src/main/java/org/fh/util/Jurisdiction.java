@@ -2,6 +2,7 @@ package org.fh.util;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
+import org.fh.entity.system.User;
 
 /**
  * 说明：权限工具类
@@ -37,5 +38,22 @@ public class Jurisdiction {
 	public static String getRnumbers(){
 		return getSession().getAttribute(Const.SESSION_RNUMBERS).toString();
 	}
+
+	public static User getUser(){
+	    try{
+           return  (User) getSession().getAttribute(Const.SESSION_USER);
+        }catch (Exception e){
+	        e.printStackTrace();
+	        return null;
+        }
+	}
+
+	public static String getUserId(){
+	    User user=getUser();
+	    if(null!=user){
+            return getUser().getUSER_ID();
+        }
+        return null;
+    }
 
 }
