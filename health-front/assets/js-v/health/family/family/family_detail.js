@@ -1,4 +1,3 @@
-
 var vm = new Vue({
 	el: '#app',
 
@@ -20,14 +19,6 @@ var vm = new Vue({
         //初始执行
         init() {
     		this.getList();
-			//复选框控制全选,全不选
-			$('#zcheckbox').click(function(){
-				 if($(this).is(':checked')){
-					 $("input[name='ids']").click();
-				 }else{
-					 $("input[name='ids']").attr("checked", false);
-				 }
-			});
         },
 
         //获取列表
@@ -38,7 +29,7 @@ var vm = new Vue({
                     withCredentials: true
                 },
         		type: "POST",
-        		url: httpurl+'${objectNameLower}/list?showCount='+this.showCount+'&currentPage='+this.currentPage,
+        		url: httpurl+'family/list?showCount='+this.showCount+'&currentPage='+this.currentPage,
         		data: {KEYWORDS:this.KEYWORDS,tm:new Date().getTime()},
         		dataType:"json",
         		success: function(data){
@@ -49,7 +40,7 @@ var vm = new Vue({
         			 vm.loading = false;
         			 $("input[name='ids']").attr("checked", false);
         		 }else if ("exception" == data.result){
-                 	showException("${TITLE}",data.exception);//显示异常
+                 	showException("家人群组管理",data.exception);//显示异常
                  }
         		}
         	}).done().fail(function(){
@@ -65,9 +56,9 @@ var vm = new Vue({
     		 var diag = new top.Dialog();
     		 diag.Drag=true;
     		 diag.Title ="新增";
- 			 diag.URL = '../../${packageName2}/${objectNameLower}/${objectNameLower}_edit.html';
-    		 diag.Width = 1000;
-    		 diag.Height = 800;
+ 			 diag.URL = '../../health/family/family/family_edit.html';
+    		 diag.Width = 600;
+    		 diag.Height = 400;
     		 diag.Modal = true;				//有无遮罩窗口
     		 diag. ShowMaxButton = true;	//最大化按钮
     	     diag.ShowMinButton = true;		//最小化按钮
@@ -86,9 +77,9 @@ var vm = new Vue({
     		 var diag = new top.Dialog();
     		 diag.Drag=true;
     		 diag.Title ="编辑";
-    		 diag.URL = '../../${packageName2}/${objectNameLower}/${objectNameLower}_edit.html?FID='+id;
-    		 diag.Width = 1000;
-    		 diag.Height = 800;
+    		 diag.URL = '../../health/family/family/family_edit.html?FID='+id;
+    		 diag.Width = 600;
+    		 diag.Height = 400;
     		 diag.Modal = true;				//有无遮罩窗口
     		 diag. ShowMaxButton = true;	//最大化按钮
     	     diag.ShowMinButton = true;		//最小化按钮
@@ -118,8 +109,8 @@ var vm = new Vue({
                             withCredentials: true
                         },
             			type: "POST",
-            			url: httpurl+'${objectNameLower}/delete',
-            	    	data: {${objectNameUpper}_ID:id,tm:new Date().getTime()},
+            			url: httpurl+'family/delete',
+            	    	data: {FAMILY_ID:id,tm:new Date().getTime()},
             			dataType:'json',
             			success: function(data){
             				if("success" == data.result){
@@ -134,44 +125,47 @@ var vm = new Vue({
                 }
             });
     	},
-
-      	//判断按钮权限，用于是否显示按钮
-        hasButton: function(){
-        	var keys = '${objectNameLower}:add,${objectNameLower}:del,${objectNameLower}:edit,toExcel';
-        	$.ajax({
-        		xhrFields: {
-                    withCredentials: true
-                },
-        		type: "POST",
-        		url: httpurl+'head/hasButton',
-        		data: {keys:keys,tm:new Date().getTime()},
-        		dataType:"json",
-        		success: function(data){
-        		 if("success" == data.result){
-        			vm.add = data.${objectNameLower}fhadminadd;		//新增权限
-        			vm.del = data.${objectNameLower}fhadmindel;		//删除权限
-        			vm.edit = data.${objectNameLower}fhadminedit;	//修改权限
-        			vm.toExcel = data.toExcel;						//导出到excel权限
-        		 }else if ("exception" == data.result){
-                 	showException("按钮权限",data.exception);		//显示异常
-                 }
-        		}
-        	})
-        },
-
-        //导出excel
-		goExcel: function (){
-			swal({
-               	title: '',
-                text: '确定要导出到excel吗?',
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            }).then((willDelete) => {
-                if (willDelete) {
-                	window.location.href = httpurl+'${objectNameLower}/excel';
-                }
-            });
+		
+		//加入家庭组
+		joinFamily:function(){
+			var diag = new top.Dialog();
+			diag.Drag=true;
+			diag.Title ="加入家庭组";
+			diag.URL = '../../health/family/family/family_join.html';
+			diag.Width = 600;
+			diag.Height = 400;
+			diag.Modal = true;				//有无遮罩窗口
+			diag. ShowMaxButton = true;	//最大化按钮
+			diag.ShowMinButton = true;		//最小化按钮
+			diag.CancelEvent = function(){ //关闭事件
+			    			 var varSon = diag.innerFrame.contentWindow.document.getElementById('showform');
+			    			 if(varSon != null && varSon.style.display == 'none'){
+			    				 vm.getList();
+			    			}
+			    			diag.close();
+			};
+			diag.show();
+		},
+		
+		//查看详情
+		goDetail:function(id){
+			var diag = new top.Dialog();
+			diag.Drag=true;
+			diag.Title ="加入家庭组";
+			diag.URL = '../../health/family/family/family_detail.html?FAMILY_ID='+id;
+			diag.Width = 1000;
+			diag.Height = 800;
+			diag.Modal = true;				//有无遮罩窗口
+			diag. ShowMaxButton = true;	//最大化按钮
+			diag.ShowMinButton = true;		//最小化按钮
+			diag.CancelEvent = function(){ //关闭事件
+			    			 var varSon = diag.innerFrame.contentWindow.document.getElementById('showform');
+			    			 if(varSon != null && varSon.style.display == 'none'){
+			    				 vm.getList();
+			    			}
+			    			diag.close();
+			};
+			diag.show();	
 		},
 		//批量操作
     	makeAll: function (msg){
@@ -207,7 +201,7 @@ var vm = new Vue({
     	                            withCredentials: true
     	                        },
     							type: "POST",
-    							url: httpurl+'${objectNameLower}/deleteAll?tm='+new Date().getTime(),
+    							url: httpurl+'family/deleteAll?tm='+new Date().getTime(),
     					    	data: {DATA_IDS:str},
     							dataType:'json',
     							success: function(data){
@@ -222,6 +216,48 @@ var vm = new Vue({
                 }
             });
     	},
+		
+	
+		
+      	//判断按钮权限，用于是否显示按钮
+        hasButton: function(){
+        	var keys = 'family:add,family:del,family:edit,toExcel';
+        	$.ajax({
+        		xhrFields: {
+                    withCredentials: true
+                },
+        		type: "POST",
+        		url: httpurl+'head/hasButton',
+        		data: {keys:keys,tm:new Date().getTime()},
+        		dataType:"json",
+        		success: function(data){
+        		 if("success" == data.result){
+        			vm.add = data.familyfhadminadd;		//新增权限
+        			vm.del = data.familyfhadmindel;		//删除权限
+        			vm.edit = data.familyfhadminedit;	//修改权限
+        			vm.toExcel = data.toExcel;						//导出到excel权限
+        		 }else if ("exception" == data.result){
+                 	showException("按钮权限",data.exception);		//显示异常
+                 }
+        		}
+        	})
+        },
+
+        //导出excel
+		goExcel: function (){
+			swal({
+               	title: '',
+                text: '确定要导出到excel吗?',
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                	window.location.href = httpurl+'family/excel';
+                }
+            });
+		},
+
         //-----分页必用----start
         nextPage: function (page){
         	this.currentPage = page;

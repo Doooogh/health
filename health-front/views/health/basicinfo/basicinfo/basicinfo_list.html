@@ -83,6 +83,12 @@
                                     			<table class="table table-hover">	
 													<thead>
 														<tr>
+															<th style="width: 50px;" id="cts">
+																<div class="checkbox d-inline">
+																	<input type="checkbox" name="fhcheckbox" id="zcheckbox">
+																	<label  style="max-height: 12px;" for="zcheckbox" class="cr"></label>
+																</div>
+															</th>
 															<th style="width:50px;">NO</th>
 															<th>姓名</th>
 															<th>性别</th>
@@ -101,6 +107,12 @@
 													<!-- 开始循环 -->	
 														<template v-for="(data,index) in varList">
 															<tr>
+																<td>
+																	<div class="checkbox d-inline">
+																		<input type="checkbox" v-bind:id="'zcheckbox'+index" name='ids' v-bind:value="data.BASICINFO_ID">
+																		<label  style="max-height: 12px;" v-bind:for="'zcheckbox'+index" class="cr"></label>
+																	</div>
+																</td>
 																<td>{{page.showCount*(page.currentPage-1)+index+1}}</td>
 																<td>{{data.UNAME}}</td>
 																<td>{{data.DNAME2}}</td>
@@ -135,6 +147,7 @@
 													<tr>
 														<td style="vertical-align:top;">
 															<a class="btn btn-light btn-sm" v-on:click="goAdd">新增</a>
+															<a v-show="del&&!isAdmin" class="btn btn-light btn-sm" v-on:click="makeAll('确定要删除选中的数据吗?')">删除</a>
 														</td>
 														<td style="vertical-align:top;"><div style="float: right;padding-top: 0px;margin-top: 0px;" v-html="page.pageStr"></div></td>
 													</tr>

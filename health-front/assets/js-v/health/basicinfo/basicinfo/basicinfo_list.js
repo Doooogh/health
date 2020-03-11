@@ -12,7 +12,8 @@ var vm = new Vue({
 		del:false,		//删
 		edit:false,		//改
 		toExcel:false,	//导出到excel权限
-		loading:false	//加载状态
+		loading:false	,//加载状态
+		isAdmin:false,  //是否是管理员 
     },
 
 	methods: {
@@ -20,6 +21,14 @@ var vm = new Vue({
         //初始执行
         init() {
     		this.getList();
+			//复选框控制全选,全不选 
+			$('#zcheckbox').click(function(){
+				 if($(this).is(':checked')){
+					 $("input[name='ids']").click();
+				 }else{
+					 $("input[name='ids']").attr("checked", false);
+				 }
+			});
         },
 
         //获取列表
@@ -40,6 +49,9 @@ var vm = new Vue({
 					 	value.BIRTHDAY=value.BIRTHDAY.substring(0,10);
 					 });
         			 vm.page = data.page;
+					 if(data.isAdmin){
+						 vm.isAdmin=true;
+					 }
         			 vm.hasButton();
         			 vm.loading = false;
         			 $("input[name='ids']").attr("checked", false);
@@ -130,6 +142,56 @@ var vm = new Vue({
             });
     	},
 
+
+		//批量操作
+		makeAll: function (msg){
+			swal({
+		        title: '',
+		        text: msg,
+		        icon: "warning",
+		        buttons: true,
+		        dangerMode: true,
+		    }).then((willDelete) => {
+		        if (willDelete) {
+		        	var str = '';
+					for(var i=0;i < document.getElementsByName('ids').length;i++){
+						  if(document.getElementsByName('ids')[i].checked){
+						  	if(str=='') str += document.getElementsByName('ids')[i].value;
+						  	else str += ',' + document.getElementsByName('ids')[i].value;
+						  }
+					}
+					if(str==''){
+						$("#cts").tips({
+							side:2,
+				            msg:'点这里全选',
+				            bg:'#AE81FF',
+				            time:3
+				        });
+		                swal("", "您没有选择任何内容!", "warning");
+						return;
+					}else{
+						if(msg == '确定要删除选中的数据吗?'){
+							this.loading = true;
+							$.ajax({
+								xhrFields: {
+		                            withCredentials: true
+		                        },
+								type: "POST",
+								url: httpurl+'basicinfo/deleteAll?tm='+new Date().getTime(),
+						    	data: {DATA_IDS:str},
+								dataType:'json',
+								success: function(data){
+									if("success" == data.result){
+										swal("删除成功", "已经从列表中删除!", "success");
+			        				 }
+									vm.getList();
+								}
+							});
+						}
+					}
+		        }
+		    });
+		},
       	//判断按钮权限，用于是否显示按钮
         hasButton: function(){
         	var keys = 'basicinfo:add,basicinfo:del,basicinfo:edit,toExcel';

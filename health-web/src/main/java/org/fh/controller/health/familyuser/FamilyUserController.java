@@ -1,4 +1,4 @@
-package org.fh.controller.health.basicinfo;
+package org.fh.controller.health.familyuser;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.fh.util.*;
+import org.apache.commons.lang3.StringUtils;
+import org.fh.service.health.family.FamilyService;
+import org.fh.util.Jurisdiction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,39 +18,40 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 import org.fh.controller.base.BaseController;
 import org.fh.entity.Page;
+import org.fh.util.DateUtil;
+import org.fh.util.ObjectExcelView;
+import org.fh.util.Tools;
 import org.fh.entity.PageData;
-import org.fh.service.health.basicinfo.BasicInfoService;
+import org.fh.service.health.familyuser.FamilyUserService;
 
 /** 
- * 说明：用户基本信息
+ * 说明：家庭群组人员数据表
  * 作者：FH Admin QQ313596790
- * 时间：2020-03-10
+ * 时间：2020-03-12
  * 官网：www.fhadmin.org
  */
 @Controller
-@RequestMapping("/basicinfo")
-public class BasicInfoController extends BaseController {
+@RequestMapping("/familyuser")
+public class FamilyUserController extends BaseController {
 	
 	@Autowired
-	private BasicInfoService basicinfoService;
-	
+	private FamilyUserService familyuserService;
+
+	@Autowired
+	private FamilyService familyService;
 	/**保存
 	 * @param
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/add")
-	@RequiresPermissions("basicinfo:add")
 	@ResponseBody
 	public Object add() throws Exception{
 		Map<String,Object> map = new HashMap<String,Object>();
 		String errInfo = "success";
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("BASICINFO_ID", this.get32UUID());	//主键
-		pd.put("CREATE_BY",Jurisdiction.getUserId());	//主键
-		pd.put("CREATE_DATE",new Date());
-		pd.put("IS_NEW","1");
-		basicinfoService.save(pd);
+		pd.put("FAMILYUSER_ID", this.get32UUID());	//主键
+		familyuserService.save(pd);
 		map.put("result", errInfo);
 		return map;
 	}
@@ -58,14 +61,13 @@ public class BasicInfoController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/delete")
-	@RequiresPermissions("basicinfo:del")
 	@ResponseBody
 	public Object delete() throws Exception{
 		Map<String,String> map = new HashMap<String,String>();
 		String errInfo = "success";
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		basicinfoService.delete(pd);
+		familyuserService.delete(pd);
 		map.put("result", errInfo);				//返回结果
 		return map;
 	}
@@ -75,14 +77,13 @@ public class BasicInfoController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/edit")
-	@RequiresPermissions("basicinfo:edit")
 	@ResponseBody
 	public Object edit() throws Exception{
 		Map<String,Object> map = new HashMap<String,Object>();
 		String errInfo = "success";
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		basicinfoService.edit(pd);
+		familyuserService.edit(pd);
 		map.put("result", errInfo);
 		return map;
 	}
@@ -92,7 +93,6 @@ public class BasicInfoController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/list")
-	@RequiresPermissions("basicinfo:list")
 	@ResponseBody
 	public Object list(Page page) throws Exception{
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -101,15 +101,14 @@ public class BasicInfoController extends BaseController {
 		pd = this.getPageData();
 		String KEYWORDS = pd.getString("KEYWORDS");						//关键词检索条件
 		if(Tools.notEmpty(KEYWORDS))pd.put("KEYWORDS", KEYWORDS.trim());
-		if(!Jurisdiction.getRnumbers().contains(Const.ROLE_IDS_ADMIN_RNUMBER)){
-			pd.put("CREATE_BY",Jurisdiction.getUserId());
-		}
 		page.setPd(pd);
-		List<PageData>	varList = basicinfoService.list(page);	//列出BasicInfo列表
+		PageData info = familyService.getInfo(pd);
+		List<PageData>	varList = familyuserService.list(page);	//列出FamilyUser列表
 		map.put("varList", varList);
-		if(Jurisdiction.getRnumbers().contains(Const.ROLE_IDS_ADMIN_RNUMBER)){
-			map.put("isAdmin",true);
+		if(Jurisdiction.getUserId().equals(info.getString("CREATE_BY"))){
+			map.put("isCreate",true);
 		}
+		map.put("info",info);
 		map.put("page", page);
 		map.put("result", errInfo);
 		return map;
@@ -120,28 +119,23 @@ public class BasicInfoController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/goEdit")
-	@RequiresPermissions("basicinfo:edit")
 	@ResponseBody
 	public Object goEdit() throws Exception{
 		Map<String,Object> map = new HashMap<String,Object>();
 		String errInfo = "success";
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd = basicinfoService.findById(pd);	//根据ID读取
+		pd = familyuserService.findById(pd);	//根据ID读取
 		map.put("pd", pd);
 		map.put("result", errInfo);
 		return map;
 	}	
-
-
-
-
+	
 	 /**批量删除
 	 * @param
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/deleteAll")
-	@RequiresPermissions("basicinfo:del")
 	@ResponseBody
 	public Object deleteAll() throws Exception{
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -151,7 +145,7 @@ public class BasicInfoController extends BaseController {
 		String DATA_IDS = pd.getString("DATA_IDS");
 		if(Tools.notEmpty(DATA_IDS)){
 			String ArrayDATA_IDS[] = DATA_IDS.split(",");
-			basicinfoService.deleteAll(ArrayDATA_IDS);
+			familyuserService.deleteAll(ArrayDATA_IDS);
 			errInfo = "success";
 		}else{
 			errInfo = "error";
@@ -172,31 +166,15 @@ public class BasicInfoController extends BaseController {
 		pd = this.getPageData();
 		Map<String,Object> dataMap = new HashMap<String,Object>();
 		List<String> titles = new ArrayList<String>();
-		titles.add("姓名");	//1
-		titles.add("性别");	//2
-		titles.add("生日");	//3
-		titles.add("身高");	//4
-		titles.add("体重");	//5
-		titles.add("过敏史");	//6
-		titles.add("疾病史");	//7
-		titles.add("家族病史");	//8
-		titles.add("其他信息");	//9
-		titles.add("用户id");	//10
+		titles.add("family_id");	//1
+		titles.add("user_id");	//2
 		dataMap.put("titles", titles);
-		List<PageData> varOList = basicinfoService.listAll(pd);
+		List<PageData> varOList = familyuserService.listAll(pd);
 		List<PageData> varList = new ArrayList<PageData>();
 		for(int i=0;i<varOList.size();i++){
 			PageData vpd = new PageData();
-			vpd.put("var1", varOList.get(i).getString("NAME"));	    //1
-			vpd.put("var2", varOList.get(i).getString("SEX"));	    //2
-			vpd.put("var3", varOList.get(i).getString("BIRTHDAY"));	    //3
-			vpd.put("var4", varOList.get(i).getString("HEIGHT"));	    //4
-			vpd.put("var5", varOList.get(i).getString("WEIGHT"));	    //5
-			vpd.put("var6", varOList.get(i).getString("ALLERGIC_HISTORY"));	    //6
-			vpd.put("var7", varOList.get(i).getString("DISEASES_HISTORY"));	    //7
-			vpd.put("var8", varOList.get(i).getString("FA_DISEASES_HISTORY"));	    //8
-			vpd.put("var9", varOList.get(i).getString("OTHERS"));	    //9
-			vpd.put("var10", varOList.get(i).getString("USER_ID"));	    //10
+			vpd.put("var1", varOList.get(i).getString("FAMILY_ID"));	    //1
+			vpd.put("var2", varOList.get(i).getString("USER_ID"));	    //2
 			varList.add(vpd);
 		}
 		dataMap.put("varList", varList);
@@ -204,5 +182,51 @@ public class BasicInfoController extends BaseController {
 		mv = new ModelAndView(erv,dataMap);
 		return mv;
 	}
-	
+
+
+	/**
+	 * 通过FAMILY_ID加入家庭组
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/joinFamily")
+	@ResponseBody
+	public Object joinFamily() throws Exception{
+		Map<String,Object> map = new HashMap<String,Object>();
+		String errInfo = "success";
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		pd.put("FAMILYUSER_ID",get32UUID());
+		pd.put("USER_ID",Jurisdiction.getUserId());
+		familyuserService.save(pd);
+		map.put("result", errInfo);
+		return map;
+	}
+
+
+	/**
+	 * 通过FAMILY_ID判断是否已经加入该家庭组
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/hadJoin")
+	@ResponseBody
+	public Object hadJoin() throws Exception{
+		Map<String,Object> map = new HashMap<String,Object>();
+		String errInfo = "success";
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		if(null==pd.get("USER_ID")||StringUtils.isBlank(pd.getString("USER_ID"))){
+			pd.put("USER_ID",Jurisdiction.getUserId());
+		}
+		List<PageData> list = familyuserService.listAll(pd);
+		if(list.size()>0){
+			map.put("joinStatusRes",true);
+		}else{
+			map.put("joinStatusRes",false);
+		}
+		map.put("result", errInfo);
+		return map;
+	}
+
 }
