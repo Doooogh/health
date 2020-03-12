@@ -18,7 +18,8 @@
     <link rel="stylesheet" href="../../../../assets/fonts/fontawesome/css/fontawesome-all.min.css">
     <link rel="stylesheet" href="../../../../assets/plugins/animation/css/animate.min.css">
     <link rel="stylesheet" href="../../../../assets/css/style.css">
-
+<!--引入弹窗组件-->
+    <link type="text/css" rel="stylesheet" href="../../../../plugins/fhdrag/style.css" />
     <!-- vue -->
 	<script src="../../../../assets/js-vue/vue.js"></script>
     <!--全局配置-->
@@ -54,7 +55,6 @@
 										<div style="padding-left: 20px;padding-top: 15px;">
 										<table>
 											<tr>
-                                                
 												<td>
 							                        <div class="input-group input-group-sm mb-3">
 	                                                	<input class="form-control" type="text" v-model="KEYWORDS" placeholder="这里输入关键词" />
@@ -66,17 +66,6 @@
 														<i style="margin-top:-3px;margin-left: -6px;" class="mdi mdi-cloud-download"></i>
 													</a>
 												</td>
-												<td style="float: right;margin-left: 20px;height: 49px;">
-												    <div class="" style="background: null!important;height: 100%;display: flex;align-items: center;font-size: 17px;">
-												    	<span style="margin-right: 10px;font-weight: bold;">创建人:</span>
-												    	<span style="margin-right: 20px;font-weight: bold;">{{info.UNAME}}</span>
-												    	<span style="margin-right: 10px;font-weight: bold;">创建时间:</span>
-												    	<span style="margin-right: 20px;font-weight: bold;">{{info.CREATE_DATE}}</span>
-														<span style="margin-right: 10px;font-weight: bold;">成员总数:</span>
-														<span style="margin-right: 20px;font-weight: bold;">{{info.UNUM}}</span>
-													</div>
-												</td>
-												
 												<td v-show="loading">
 												<!-- [加载状态 ] start -->
 										    	<div class="d-flex justify-content-center" style="margin-top:-10px;">
@@ -102,7 +91,15 @@
                                                                 </div>
                                                             </th>
 															<th style="width:50px;">NO</th>
-															<th>用户</th>
+															<th>信息归属人</th>
+															<th>步数</th>
+															<th>心率</th>
+															<th>体重</th>
+															<th>血压</th>
+															<th>睡眠时长</th>
+															<th>其他信息</th>
+															<th>创建人</th>
+															<th>创建时间</th>
 															<th>操作</th>
 														</tr>
 													</thead>
@@ -112,17 +109,23 @@
 															<tr>
                                                                 <td>
                                                                     <div class="checkbox d-inline">
-                                                                        <input type="checkbox" v-bind:id="'zcheckbox'+index" name='ids' :user_id="data.USER_ID" v-bind:value="data.FAMILYUSER_ID">
+                                                                        <input type="checkbox" v-bind:id="'zcheckbox'+index" name='ids' v-bind:value="data.HEALTHINFO_ID">
                                                                         <label  style="max-height: 12px;" v-bind:for="'zcheckbox'+index" class="cr"></label>
                                                                     </div>
                                                                 </td>
 																<td scope="row">{{page.showCount*(page.currentPage-1)+index+1}}</td>
-																<td>{{data.NAME}}</td>
+																<td>{{data.TUNAME}}</td>
+																<td>{{data.STEP_NUMBER}}</td>
+																<td>{{data.HEART_RATE}}</td>
+																<td>{{data.WEIGHT}}</td>
+																<td>{{data.BLOOD_PRESSURE}}</td>
+																<td>{{data.SLEEP_TIME}}</td>
+																<td>{{data.OTHER_INFO}}</td>
+																<td>{{data.CUNAME}}</td>
+																<td>{{data.CREATE_DATE}}</td>
 																<td>
-																	<!-- <a v-show="isCreate" title="修改" v-on:click="goEdit(data.FAMILYUSER_ID)" style="cursor:pointer;"><i class="feather icon-edit-2"></i></a> -->
-								                 					<a   title="健康信息" v-on:click="toData(data.USER_ID)" style="cursor:pointer;"><i class="feather icon-shuffle"></i></a>
-								                 					<a   title="助其更新健康信息" v-on:click="toAddHealthInfo(data.USER_ID)" style="cursor:pointer;"><i class="feather icon-book"></i></a>
-								                 					<a v-show="isCreate&&info.CREATE_BY!=data.USER_ID"  title="删除" v-on:click="goDel(data.FAMILYUSER_ID)" style="cursor:pointer;"><i class="feather icon-x"></i></a>
+																	<a v-show="edit" title="修改" v-on:click="goEdit(data.HEALTHINFO_ID)" style="cursor:pointer;"><i class="feather icon-edit-2"></i></a>
+								                 					<a v-show="del"  title="删除" v-on:click="goDel(data.HEALTHINFO_ID)" style="cursor:pointer;"><i class="feather icon-x"></i></a>
 																</td>
 															</tr>
 														</template>
@@ -134,8 +137,8 @@
 												<table style="width:100%;margin-top:15px;">
 													<tr>
 														<td style="vertical-align:top;">
-															<a v-show="isCreate" class="btn btn-light btn-sm" v-on:click="goAdd">新增</a>
-                                                            <a v-show="isCreate" class="btn btn-light btn-sm" v-on:click="makeAll('确定要删除选中的数据吗?')">删除</a>
+															<a class="btn btn-light btn-sm" v-on:click="goAdd">新增</a>
+                                                            <a v-show="del" class="btn btn-light btn-sm" v-on:click="makeAll('确定要删除选中的数据吗?')">删除</a>
 														</td>
 														<td style="vertical-align:top;"><div style="float: right;padding-top: 0px;margin-top: 0px;" v-html="page.pageStr"></div></td>
 													</tr>
@@ -160,8 +163,17 @@
 <script type="text/javascript" src="../../../../assets/js/jquery-1.7.2.js"></script>
 <script type="text/javascript" src="../../../../assets/js/pre-loader.js"></script>
 <script src="../../../../assets/plugins/sweetalert/js/sweetalert.min.js"></script>
+
+<!--引入弹窗组件start-->
+<script type="text/javascript" src="../../../../plugins/fhdrag/drag.js"></script>
+<script type="text/javascript" src="../../../../plugins/fhdrag/dialog.js"></script>
+<!--引入弹窗组件end-->
+
+<!-- 提示 -->
+<script type="text/javascript" src="../../../../assets/js/jquery.tips.js"></script>
+
 <!-- 表单验证提示 -->
 <script src="../../../../assets/js/jquery.tips.js"></script>
-<script src="../../../../assets/js-v/health/familyuser/familyuser/familyuser_list.js"></script>
+<script src="../../../../assets/js-v/health/healthinfo/healthinfo/healthinfo_list1.js"></script>
 </body>
 </html>

@@ -23,6 +23,7 @@ var vm = new Vue({
         //初始执行
         init() {
 			var FID = this.getUrlKey('FAMILY_ID');	//当接收过来的FID不为null时,表示此页面是修改进来的
+			
 			if(null != FID){
 				this.FAMILY_ID = FID;
 				this.getList();
@@ -96,6 +97,26 @@ var vm = new Vue({
     		 };
     		 diag.show();
     	},
+
+		toAddHealthInfo:function(id){
+			/* var diag = new top.Dialog();
+			diag.Drag=true;
+			diag.Title ="查看健康信息";
+			diag.URL = '../../health/healthinfo/healthinfo/healthinfo_list.html?USER_ID='+id;
+			diag.Width = 1000;
+			diag.Height = 800;
+			diag.Modal = true;				//有无遮罩窗口
+			diag. ShowMaxButton = true;	//最大化按钮
+			diag.ShowMinButton = true;		//最小化按钮
+			diag.CancelEvent = function(){ //关闭事件
+			    			diag.close();
+			};
+			diag.show(); */
+			window.open('../../healthinfo/healthinfo/healthinfo_list1.html?USER_ID='+id);
+		},
+		toData:function(id){
+			window.open('../../healthinfo/healthinfo/healthinfo_data.html?USER_ID='+id);
+		},
 
     	//修改
     	goEdit: function(id){

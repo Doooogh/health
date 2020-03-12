@@ -75,7 +75,7 @@ var vm = new Vue({
                         if("success" == data.result){
                         	swal("", "保存成功", "success");
                         	setTimeout(function(){
-                        		top.Dialog.close();//关闭弹窗
+                        		Dialog.close();//关闭弹窗
                             },1000);
                         }else if ("exception" == data.result){
                         	showException("家庭群组人员数据表",data.exception);//显示异常
