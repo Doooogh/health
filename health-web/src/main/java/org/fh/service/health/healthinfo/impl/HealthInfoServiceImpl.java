@@ -79,6 +79,11 @@ public class HealthInfoServiceImpl implements HealthInfoService{
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		healthinfoMapper.deleteAll(ArrayDATA_IDS);
 	}
-	
+
+	@Override
+	public List<PageData> getEDataByType(PageData pd) {
+		return healthinfoMapper.getEDataByType(pd);
+	}
+
 }
 

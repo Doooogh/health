@@ -52,6 +52,10 @@ public interface BasicInfoMapper{
 	 * @throws Exception
 	 */
 	PageData findById(PageData pd);
+
+	public PageData findByUserIdNew(PageData pd);
+
+
 	
 	/**批量删除
 	 * @param ArrayDATA_IDS

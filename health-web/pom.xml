@@ -402,7 +402,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>heath-web</finalName>
+		<finalName>health-web</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

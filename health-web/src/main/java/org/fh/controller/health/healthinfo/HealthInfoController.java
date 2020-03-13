@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.fh.config.HealthInfoEnum;
 import org.fh.util.Jurisdiction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -208,10 +209,46 @@ public class HealthInfoController extends BaseController {
 		String errInfo = "success";
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		String type=pd.getString("TYPE");   //数据分析类型  比如心率 步数
-		String dateRange=pd.getString("DATE_RANGE");  //时间范围
-		String unit="";  //根据类型获取单位  比如 温度 就是摄氏度
+		String COLUMN=pd.getString("COLUMN");   //数据分析类型  比如心率 步数
+		Map<String,Object> dMap=new HashMap<>();
+		if("HEART_RATE".equals(COLUMN)){
+			dMap.put("DATA_TYPE",HealthInfoEnum.HEART_RATE.getDataType());
+			dMap.put("NAME",HealthInfoEnum.HEART_RATE.getName());
+			dMap.put("UNIT",HealthInfoEnum.HEART_RATE.getUnit());
+		}else if("STEP_NUMBER".equals(COLUMN)){
+			dMap.put("DATA_TYPE",HealthInfoEnum.STEP_NUMBER.getDataType());
+			dMap.put("NAME",HealthInfoEnum.STEP_NUMBER.getName());
+			dMap.put("UNIT",HealthInfoEnum.STEP_NUMBER.getUnit());
+		}else if("WEIGHT".equals(COLUMN)){
+			dMap.put("DATA_TYPE",HealthInfoEnum.WEIGHT.getDataType());
+			dMap.put("NAME",HealthInfoEnum.WEIGHT.getName());
+			dMap.put("UNIT",HealthInfoEnum.WEIGHT.getUnit());
+		}else if("SLEEP_TIME".equals(COLUMN)){
+			dMap.put("DATA_TYPE",HealthInfoEnum.SLEEP_TIME.getDataType());
+			dMap.put("NAME",HealthInfoEnum.SLEEP_TIME.getName());
+			dMap.put("UNIT",HealthInfoEnum.SLEEP_TIME.getUnit());
+		}else if("BLOOD_PRESSURE".equals(COLUMN)){
+			dMap.put("DATA_TYPE",HealthInfoEnum.BLOOD_PRESSURE.getDataType());
+			dMap.put("NAME",HealthInfoEnum.BLOOD_PRESSURE.getName());
+			dMap.put("UNIT",HealthInfoEnum.BLOOD_PRESSURE.getUnit());
+		}else{
+			errInfo="error";
+		}
+		map.put("dMap",dMap);
+		List<PageData> eDataByType = healthinfoService.getEDataByType(pd);
+		List<String> timeList=new ArrayList<>();
+		List<String> dataList=new ArrayList<>();
+		for (PageData pageData : eDataByType) {
+			timeList.add(pageData.getString("ETIME"));
+			dataList.add(pageData.getString("EDATA"));
+		}
+		dMap.put("eData",dataList);
+		dMap.put("eTime",timeList);
+		map.put("aData",dMap);
+		map.put("result",errInfo);
 		return map;
 	}
+
+
 	
 }

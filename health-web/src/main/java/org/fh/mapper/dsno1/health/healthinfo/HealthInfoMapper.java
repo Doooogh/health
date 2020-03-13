@@ -55,6 +55,12 @@ public interface HealthInfoMapper{
 	 * @throws Exception
 	 */
 	void deleteAll(String[] ArrayDATA_IDS);
+
+	/**根据类型获取数据
+	 * @param pd
+	 * @return
+	 */
+	List<PageData> getEDataByType(PageData pd);
 	
 }
 

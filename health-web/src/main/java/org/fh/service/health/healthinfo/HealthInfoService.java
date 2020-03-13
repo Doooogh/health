@@ -55,6 +55,14 @@ public interface HealthInfoService{
 	 * @throws Exception
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception;
+
+
+	/**
+	 * 获取echarts 数据
+	 * @param pd
+	 * @return
+	 */
+	public List<PageData> getEDataByType(PageData pd);
 	
 }
 

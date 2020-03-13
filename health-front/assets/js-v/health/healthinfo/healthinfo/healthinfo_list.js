@@ -82,10 +82,6 @@ var vm = new Vue({
     	     diag.ShowMinButton = true;		//最小化按钮
     		 diag.CancelEvent = function(){ //关闭事件
     	    	 var varSon = diag.innerFrame.contentWindow.document.getElementById('showform');
-    	    	 var USER_ID2 = diag.innerFrame.contentWindow.document.getElementById('USER_ID');
-				 if(null!=USER_ID2&&undefined!=USER_ID2&&''!=USER_ID2){
-					 vm.USER_ID=USER_ID2;
-				 }
     			 if(varSon != null && varSon.style.display == 'none'){
     				 vm.getList();
     			}

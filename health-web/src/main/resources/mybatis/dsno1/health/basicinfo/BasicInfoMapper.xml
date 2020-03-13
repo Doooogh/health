@@ -118,11 +118,34 @@
 	<!-- 通过ID获取数据 -->
 	<select id="findById" parameterType="pd" resultType="pd">
 		select
-		<include refid="Field"></include>
+		<include refid="Field"></include>,
+		d2.BIANMA as BIANMA2,
+		d2.NAME AS USEX,
+		u.NAME AS UNAME
 		from
 		<include refid="tableName"></include> f
+		left join
+		<include refid="dicTableName"></include> d2
+		on f.SEX = d2.BIANMA
+		left join sys_user u on f.USER_ID=u.USER_ID
 		where
 			f.BASICINFO_ID = #{BASICINFO_ID}
+	</select>
+
+	<select id="findByUserIdNew" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>,
+		d2.BIANMA as BIANMA2,
+		d2.NAME AS USEX,
+		u.NAME AS UNAME
+		from
+		<include refid="tableName"></include> f
+		left join
+		<include refid="dicTableName"></include> d2
+		on f.SEX = d2.BIANMA
+		left join sys_user u on f.USER_ID=u.USER_ID
+		where
+		f.USER_ID = #{USER_ID} and f.IS_NEW=1
 	</select>
 
 	<!-- 列表 -->

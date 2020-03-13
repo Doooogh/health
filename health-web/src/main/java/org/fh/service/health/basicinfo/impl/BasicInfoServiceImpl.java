@@ -73,7 +73,12 @@ public class BasicInfoServiceImpl implements BasicInfoService{
 	public PageData findById(PageData pd)throws Exception{
 		return basicinfoMapper.findById(pd);
 	}
-	
+
+	@Override
+	public PageData findByUserIdNew(PageData pd) {
+		return basicinfoMapper.findByUserIdNew(pd);
+	}
+
 	/**批量删除
 	 * @param ArrayDATA_IDS
 	 * @throws Exception
@@ -81,6 +86,7 @@ public class BasicInfoServiceImpl implements BasicInfoService{
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		basicinfoMapper.deleteAll(ArrayDATA_IDS);
 	}
-	
+
+
 }
 

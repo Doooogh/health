@@ -49,12 +49,22 @@ public interface BasicInfoService{
 	 * @throws Exception
 	 */
 	public PageData findById(PageData pd)throws Exception;
-	
+
+
+	/**
+	 * 获取最新的用户基本信息
+	 * @return
+	 */
+	public PageData findByUserIdNew(PageData pd);
+
+
 	/**批量删除
 	 * @param ArrayDATA_IDS
 	 * @throws Exception
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception;
+
+
 	
 }
 

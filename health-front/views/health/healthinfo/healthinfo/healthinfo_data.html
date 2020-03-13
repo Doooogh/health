@@ -23,6 +23,7 @@
 <!--引入弹窗组件-->
     <link type="text/css" rel="stylesheet" href="../../../../plugins/fhdrag/style.css" />
 	 <script src="../../../../assets/plugins/echarts/echarts.min.js"></script>
+	
     <!-- vue -->
 	<script src="../../../../assets/js-vue/vue.js"></script>
     <!--全局配置-->
@@ -69,27 +70,49 @@
 														<div class="info_detail">
 															<div class="user_d_info1 d_info">
 																<div>
-																	<span>姓名:张三</span>
+																	<span>姓名: {{userInfo.UNAME}}</span>
 																</div>
 																<div>
-																	<span>性别:男</span>
+																	<span>性别: {{userInfo.UNAME}}</span>
 																</div>
 																<div>
-																	<span>生日:1996-03-24</span>
+																	<span>生日: {{userInfo.BIRTHDAY}}</span>
 																</div>
 															</div>
 															<div class="user_d_info2 d_info">
 																<div>
-																	<span>身高:180</span>
+																	<span>身高: {{userInfo.HEIGHT}}</span>
 																</div>
 																<div>
-																	<span>体重:66kg</span>
+																	<span>体重: {{userInfo.WEIGHT}}kg</span>
 																</div>
 															</div>
 															<div class="user_d_info3">
-																<h4><span>过敏史:无</span></h4>
-																<h4><span>疾病史:无</span></h4>
-																<h4><span>家族病史:无</span></h4>
+																<h4>
+																	<template v-if="userInfo.DISEASES_HISTORY==''">
+																		<span>无</span>
+																	</template>
+																	<template v-else>
+																		<span>过敏史: {{userInfo.DISEASES_HISTORY}}</span>
+																	</template>
+																</h4>
+																<h4>
+																	<template v-if="userInfo.DISEASES_HISTORY==''">
+																		<span>无</span>
+																	</template>
+																	<template v-else>
+																		<span>疾病史: {{userInfo.DISEASES_HISTORY}}</span>
+																	</template>
+																</h4>
+																<h4>
+																	<template v-if="userInfo.FA_DISEASES_HISTORY==''">
+																		<span>无</span>
+																	</template>
+																	<template v-else>
+																		<span>家族病史: {{userInfo.FA_DISEASES_HISTORY}}</span>
+																	</template>
+																</h4>
+														
 															</div>
 															
 														</div>
@@ -101,25 +124,25 @@
 														  </div>
 														</div>
 														<div class="d_option">
-														  <div class="d_img">
+														  <div class="d_img" @click="getEData('HEART_RATE')">
 															  <img src="../../../../assets/images/health-info/heart_rate.png" alt="心率" title="心率">
 															  <div>
 																  <span>心率</span>
 															  </div>
 														  </div>
-														  <div class="d_img">
+														  <div class="d_img"  @click="getEData('WEIGHT')">
 															  <img src="../../../../assets/images/health-info/weight.png" alt="体重" title="体重">
 														  </div>
-														  <div class="d_img">
+														  <div class="d_img"  @click="getEData('BLOOD_PRESSURE')">
 															  <img src="../../../../assets/images/health-info/blood_pressure.png" alt="血压" title="血压">
 														  </div>
-														  <div class="d_img">
+														  <div class="d_img"  @click="getEData('BLOOD_PRESSURE')">
 															  <img src="../../../../assets/images/health-info/blood_glucose.png" alt="血糖" title="血糖">
 														  </div>
-														  <div class="d_img">
+														  <div class="d_img"  @click="getEData('SLEEP_TIME')">
 															  <img src="../../../../assets/images/health-info/sleep.png" alt="睡眠时长" title="睡眠时长">
 														  </div>
-														  <div class="d_img">
+														  <div class="d_img"  @click="getEData('STEP_NUMBER')">
 															  <img src="../../../../assets/images/health-info/foot.png" alt="运动步数" title="运动步数">
 														  </div>
 																													
@@ -134,7 +157,13 @@
 													  </div>
 													</div>
 													<div class="data_echart">
-														<div id="main" style="width: 100%;height:100%;"></div>
+														<div id="data_option" >
+															<button type="button" class="btn btn-info"  @click="selectThisWeek('week')">本周</button>
+															<button type="button" class="btn btn-info" @click="selectThisWeek('month')">本月</button>
+															<button type="button" class="btn btn-info" @click="selectThisWeek('year')">本年</button>
+															<button type="button" class="btn btn-info">选择时间范围</button>
+														</div>
+														<div id="main" style="width: 100%;height:95%;"></div>
 													</div>
 												</div>
 											</div>
@@ -154,7 +183,7 @@
     <!-- [ 主内容区 ] end -->
 
 
-<script type="text/javascript" src="../../../../assets/js/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../../../assets/js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="../../../../assets/js/pre-loader.js"></script>
 <script src="../../../../assets/plugins/sweetalert/js/sweetalert.min.js"></script>
 
@@ -168,96 +197,8 @@
 
 <!-- 表单验证提示 -->
 <script src="../../../../assets/js/jquery.tips.js"></script>
-<script src="../../../../assets/js-v/health/healthinfo/healthinfo/healthinfo_list1.js"></script>
-<script>
-	 // 基于准备好的dom，初始化echarts实例
-	        var myChart = echarts.init(document.getElementById('main'));
-			  // 指定图表的配置项和数据
-			       option = {
-			           title: {
-			               text: '未来一周气温变化',
-			               subtext: '纯属虚构'
-			           },
-			           tooltip: {
-			               trigger: 'axis'
-			           },
-			           legend: {
-			               data: ['最高气温', '最低气温']
-			           },
-			           toolbox: {
-			               show: true,
-			               feature: {
-			                   dataZoom: {
-			                       yAxisIndex: 'none'
-			                   },
-			                   dataView: {readOnly: false},
-			                   magicType: {type: ['line', 'bar']},
-			                   restore: {},
-			                   saveAsImage: {}
-			               }
-			           },
-			           xAxis: {
-			               type: 'category',
-			               boundaryGap: false,
-			               data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-			           },
-			           yAxis: {
-			               type: 'value',
-			               axisLabel: {
-			                   formatter: '{value} °C'
-			               }
-			           },
-			           series: [
-			               {
-			                   name: '最高气温',
-			                   type: 'line',
-			                   data: [11, 11, 15, 13, 12, 13, 10],
-			                   markPoint: {
-			                       data: [
-			                           {type: 'max', name: '最大值'},
-			                           {type: 'min', name: '最小值'}
-			                       ]
-			                   },
-			                   markLine: {
-			                       data: [
-			                           {type: 'average', name: '平均值'}
-			                       ]
-			                   }
-			               },
-			               {
-			                   name: '最低气温',
-			                   type: 'line',
-			                   data: [1, -2, 2, 5, 3, 2, 0],
-			                   markPoint: {
-			                       data: [
-			                           {name: '周最低', value: -2, xAxis: 1, yAxis: -1.5}
-			                       ]
-			                   },
-			                   markLine: {
-			                       data: [
-			                           {type: 'average', name: '平均值'},
-			                           [{
-			                               symbol: 'none',
-			                               x: '90%',
-			                               yAxis: 'max'
-			                           }, {
-			                               symbol: 'circle',
-			                               label: {
-			                                   position: 'start',
-			                                   formatter: '最大值'
-			                               },
-			                               type: 'max',
-			                               name: '最高点'
-			                           }]
-			                       ]
-			                   }
-			               }
-			           ]
-			       };
-
-			
-			        // 使用刚指定的配置项和数据显示图表。
-			        myChart.setOption(option);
-</script>
+ <!-- day.js -->
+<script src="../../../../assets/js/day.js"></script>
+<script src="../../../../assets/js-v/health/healthinfo/healthinfo/healthinfo_data.js"></script>
 </body>
 </html>

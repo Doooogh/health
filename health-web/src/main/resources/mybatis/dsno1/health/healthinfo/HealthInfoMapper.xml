@@ -148,4 +148,19 @@
 		</foreach>
 	</delete>
 
+	<select id="getEDataByType" parameterType="pd" resultType="pd">
+		select ${COLUMN} as EDATA
+		,
+		CREATE_DATE,
+		left(CREATE_DATE,10) as ETIME
+		from
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="START_TIME!=null and START_TIME!='' and END_TIME!=null and END_TIME!=''">
+			and CREATE_DATE BETWEEN #{START_TIME} AND #{END_TIME}
+		</if>
+		and USER_ID=#{USER_ID}
+		GROUP BY CREATE_DATE
+	</select>
+
 </mapper>

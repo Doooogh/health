@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.fh.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -131,12 +132,32 @@ public class BasicInfoController extends BaseController {
 		map.put("pd", pd);
 		map.put("result", errInfo);
 		return map;
-	}	
+	}
 
+	/**根据user_id 获取个人的基本信息
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/getPInfo")
+	@RequiresPermissions("basicinfo:edit")
+	@ResponseBody
+	public Object getPInfo() throws Exception{
+		Map<String,Object> map = new HashMap<String,Object>();
+		String errInfo = "success";
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		if(null==pd.get("USER_ID")||StringUtils.isBlank(pd.getString("USER_ID"))){
+			errInfo="error";
+			throw new Exception("没有指定用户");
+		}else{
+			pd = basicinfoService.findByUserIdNew(pd);	//根据ID读取
+			map.put("pd", pd);
+		}
+		map.put("result", errInfo);
+		return map;
+	}
 
-
-
-	 /**批量删除
+	/**批量删除
 	 * @param
 	 * @throws Exception
 	 */
