@@ -45,6 +45,8 @@ public interface DictionariesService {
 	 * @throws Exception
 	 */
 	public PageData findByBianma(PageData pd)throws Exception;
+
+	public PageData findByBM(String bm)throws Exception;
 	
 	/**新增
 	 * @param pd

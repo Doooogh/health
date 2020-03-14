@@ -17,7 +17,8 @@ public class Const {
 	public static final String SESSION_RNUMBERS = "RNUMBERS";						//角色编码数组
 	public static final String SESSION_ALLMENU = "SESSION_ALLMENU";					//全部菜单
 	public static final String SKIN = "SKIN";										//用户皮肤
-	
+	public static final String ADMIN_USERNAME = "admin";										//超级管理员用户名
+
 	public static final String SYSSET = "config/sysSet.ini";						//系统设置配置文件路径
 	public static final String SYSNAME = "sysName";									//系统名称
 	public static final String SHOWCOUNT = "showCount";								//每页条数

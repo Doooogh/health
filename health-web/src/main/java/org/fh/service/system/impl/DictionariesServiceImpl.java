@@ -99,6 +99,11 @@ public class DictionariesServiceImpl implements DictionariesService {
 		return dictionariesMapper.findByBianma(pd);
 	}
 
+	@Override
+	public PageData findByBM(String bm) throws Exception {
+		return dictionariesMapper.findByBM(bm);
+	}
+
 	/**新增
 	 * @param pd
 	 * @throws Exception

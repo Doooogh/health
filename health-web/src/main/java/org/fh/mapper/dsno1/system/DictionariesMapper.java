@@ -45,6 +45,9 @@ public interface DictionariesMapper {
 	 * @throws Exception
 	 */
 	PageData findByBianma(PageData pd);
+
+
+	PageData findByBM(String BIANMA);
 	
 	/**新增
 	 * @param pd

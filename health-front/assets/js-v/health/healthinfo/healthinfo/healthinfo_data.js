@@ -95,6 +95,7 @@ var vm = new Vue({
 			this.getPInfo();
 			this.showEData();
 			this.getEData();
+			this.selectDateRange();
         },
 
 		//获取个人基本信息
@@ -125,6 +126,10 @@ var vm = new Vue({
 		getEData:function(type){
 			if(undefined!=type&&''!=type&&''!=type){
 				this.COLUMN=type;
+			}
+			
+			if(''==this.START_TIME||this.END_TIME==''){
+				this.getSETime("week");
 			}
 			$.ajax({
 				xhrFields: {
@@ -283,8 +288,8 @@ var vm = new Vue({
 		 getSETime:function(type){
 			
 			if("week"==type){
-				 vm.START_TIME=dayjs().startOf('week').add(1,"day").format('YYYY-MM-DD HH:mm:ss');
-				 vm.END_TIME=dayjs().endOf('week').add(1,"day").format('YYYY-MM-DD HH:mm:ss');
+				 this.START_TIME=dayjs().startOf('week').add(1,"day").format('YYYY-MM-DD HH:mm:ss');
+				 this.END_TIME=dayjs().endOf('week').add(1,"day").format('YYYY-MM-DD HH:mm:ss');
 			 }else if("month"==type){
 				 vm.START_TIME=dayjs().startOf('month').format('YYYY-MM-DD HH:mm:ss');
 				 vm.END_TIME=dayjs().endOf('month').format('YYYY-MM-DD HH:mm:ss');
@@ -293,7 +298,19 @@ var vm = new Vue({
 				 vm.END_TIME=dayjs().endOf('year').format('YYYY-MM-DD HH:mm:ss');
 			 }
 		 },
-		
+		 
+		 // layui 时间控件
+		 selectDateRange:function(){
+		/* 	layui.use('laydate', function(){
+				  var laydate = layui.laydate;
+				  
+				    laydate.render({
+				      elem: '#date_range',
+					  range: true
+				    });
+				  
+				  }); */
+		 },
 
 	   //根据url参数名称获取参数值
 	   getUrlKey: function (name) {
@@ -307,3 +324,7 @@ var vm = new Vue({
         this.init();
     }
 })
+
+
+
+

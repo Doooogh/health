@@ -90,6 +90,7 @@
 															<th>名称</th>
 															<th>英文</th>
 															<th>编码</th>
+															<th >备注</th>
 															<th style="width:150px;">ID</th>
 															<th>排序</th>
 															<th>操作</th>
@@ -104,6 +105,7 @@
 																<td><a v-on:click="getList(data.DICTIONARIES_ID,1)" style="cursor:pointer;">{{data.NAME}} <i class="feather icon-chevron-down"></i></a></td>
 																<td><a v-on:click="getList(data.DICTIONARIES_ID,1)" style="cursor:pointer;">{{data.NAME_EN}}</a></td>
 																<td>{{data.BIANMA}}</td>
+																<td>{{data.BZ}}</td>
 																<td>{{data.DICTIONARIES_ID}}</td>
 																<td>{{data.ORDER_BY}}</td>
 																<td>

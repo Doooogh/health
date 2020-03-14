@@ -47,7 +47,8 @@ var vm = new Vue({
         		data: {
 					USER_ID:this.USER_ID,
 					KEYWORDS:this.KEYWORDS,
-					tm:new Date().getTime()
+					tm:new Date().getTime(),
+					LTYPE:'1',
 					},
         		dataType:"json",
         		success: function(data){

@@ -58,6 +58,8 @@ public class FhsmsController extends BaseController {
 				pd.put("FROM_USERNAME", Jurisdiction.getUsername());	//发信人
 				pd.put("TO_USERNAME", arrUSERNAME[i]);					//收信人
 				fhsmsService.save(pd);									//存入发信
+
+
 				pd.put("FHSMS_ID", this.get32UUID());					//主键2
 				pd.put("TYPE", "1");									//类型1：收信
 				pd.put("FROM_USERNAME", arrUSERNAME[i]);				//发信人

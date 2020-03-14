@@ -8,7 +8,11 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.fh.config.HealthInfoEnum;
-import org.fh.util.Jurisdiction;
+import org.fh.entity.system.User;
+import org.fh.service.system.DictionariesService;
+import org.fh.service.system.FhsmsService;
+import org.fh.service.system.UsersService;
+import org.fh.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +22,6 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 import org.fh.controller.base.BaseController;
 import org.fh.entity.Page;
-import org.fh.util.DateUtil;
-import org.fh.util.ObjectExcelView;
-import org.fh.util.Tools;
 import org.fh.entity.PageData;
 import org.fh.service.health.healthinfo.HealthInfoService;
 
@@ -36,6 +37,15 @@ public class HealthInfoController extends BaseController {
 	
 	@Autowired
 	private HealthInfoService healthinfoService;
+
+	@Autowired
+	private DictionariesService dictionariesService;
+
+	@Autowired
+	private FhsmsService fhsmsService;
+
+	@Autowired
+	private UsersService usersService;
 	
 	/**保存
 	 * @param
@@ -109,8 +119,12 @@ public class HealthInfoController extends BaseController {
 		pd = this.getPageData();
 		String KEYWORDS = pd.getString("KEYWORDS");						//关键词检索条件
 		if(Tools.notEmpty(KEYWORDS))pd.put("KEYWORDS", KEYWORDS.trim());
+		if(null!=pd.get("LTYPE")&&pd.getString("LTYPE").equals("1")&&!Jurisdiction.getRnumbers().contains(Const.ROLE_IDS_ADMIN_RNUMBER)){
+			pd.put("USER_ID",Jurisdiction.getUserId());
+		}
 		page.setPd(pd);
 		List<PageData>	varList = healthinfoService.list(page);	//列出HealthInfo列表
+
 		map.put("varList", varList);
 		map.put("page", page);
 		map.put("result", errInfo);
@@ -231,6 +245,10 @@ public class HealthInfoController extends BaseController {
 			dMap.put("DATA_TYPE",HealthInfoEnum.BLOOD_PRESSURE.getDataType());
 			dMap.put("NAME",HealthInfoEnum.BLOOD_PRESSURE.getName());
 			dMap.put("UNIT",HealthInfoEnum.BLOOD_PRESSURE.getUnit());
+		}else if("BLOOD_GLUCOSE".equals(COLUMN)){
+			dMap.put("DATA_TYPE",HealthInfoEnum.BLOOD_GLUCOSE.getDataType());
+			dMap.put("NAME",HealthInfoEnum.BLOOD_GLUCOSE.getName());
+			dMap.put("UNIT",HealthInfoEnum.BLOOD_GLUCOSE.getUnit());
 		}else{
 			errInfo="error";
 		}
@@ -238,10 +256,32 @@ public class HealthInfoController extends BaseController {
 		List<PageData> eDataByType = healthinfoService.getEDataByType(pd);
 		List<String> timeList=new ArrayList<>();
 		List<String> dataList=new ArrayList<>();
-		for (PageData pageData : eDataByType) {
+
+		if(StringUtils.isNotBlank(pd.getString("START_TIME"))&&StringUtils.isNotBlank(pd.getString("END_TIME"))){
+			String startTime=pd.getString("START_TIME").substring(0,10);
+			String endTime=pd.getString("END_TIME").substring(0,10);
+			List<String> days = DateUtil.getDays(startTime, endTime);
+			for (String day : days) {
+				n:for (String s : timeList) {
+					if(s.equals(day)){
+						break n;
+					}
+				}
+				String data="0";
+				n:for (PageData pageData : eDataByType) {
+					if(pageData.getString("ETIME").equals(day)){
+						data=pageData.getString("EDATA");
+						break n;
+					}
+				}
+				timeList.add(day);
+				dataList.add(data);
+			}
+		}
+	/*	for (PageData pageData : eDataByType) {
 			timeList.add(pageData.getString("ETIME"));
 			dataList.add(pageData.getString("EDATA"));
-		}
+		}*/
 		dMap.put("eData",dataList);
 		dMap.put("eTime",timeList);
 		map.put("aData",dMap);
@@ -249,6 +289,126 @@ public class HealthInfoController extends BaseController {
 		return map;
 	}
 
+
+	/**是否超出阈值
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/isOver")
+	@ResponseBody
+	public Object isOver() throws Exception{
+		Map<String,Object> map = new HashMap<String,Object>();
+		String errInfo = "success";
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		StringBuilder msg=new StringBuilder();
+		msg.append("<p>身体状况:");
+		boolean hasEMsg=false;  //是否有提示信息
+		try{
+			//心率
+			Integer hrmax = Integer.valueOf(dictionariesService.findByBM("HRMAX").getString("BZ"));
+			Integer hrmin = Integer.valueOf(dictionariesService.findByBM("HRMIN").getString("BZ"));
+			//血压
+			Integer bpmax = Integer.valueOf(dictionariesService.findByBM("BPMAX").getString("BZ"));
+			Integer bpmin =Integer.valueOf(dictionariesService.findByBM("BPMIN").getString("BZ"));
+			//睡眠
+			Integer stmin=Integer.valueOf(dictionariesService.findByBM("STMIN").getString("BZ"));
+			//血糖
+			Double bgmax = Double.valueOf(dictionariesService.findByBM("BGMAX").getString("BZ"));
+			Double bgmin =Double.valueOf(dictionariesService.findByBM("BGMIN").getString("BZ"));
+			//步数
+			Integer snmax = Integer.valueOf(dictionariesService.findByBM("SNMAX").getString("BZ"));
+
+			Integer heart_rate = Integer.valueOf(pd.getString("HEART_RATE"));
+			Integer weight = Integer.valueOf(pd.getString("WEIGHT"));
+			Integer blood_pressure = Integer.valueOf(pd.getString("BLOOD_PRESSURE"));
+			Integer sleep_time = Integer.valueOf(pd.getString("SLEEP_TIME"));
+			Integer step_number = Integer.valueOf(pd.getString("STEP_NUMBER"));
+			Double blood_glucose = Double.valueOf(pd.getString("BLOOD_GLUCOSE"));
+
+			if(heart_rate<hrmin){
+				msg.append("心率略低、");
+				hasEMsg=true;
+			}else if(hrmax<heart_rate){
+				msg.append("心率略高、");
+				hasEMsg=true;
+			}
+			if(blood_pressure<bpmin){
+				msg.append("血压略低、");
+				hasEMsg=true;
+			}else if(blood_pressure>bpmax){
+				msg.append("血压略高、");
+				hasEMsg=true;
+			}
+
+			if(sleep_time<stmin){
+				msg.append("睡眠时间略少，需要多注意休息、");
+				hasEMsg=true;
+			}
+			if(step_number>snmax){
+				msg.append("步行过多，要劳逸结合、");
+				hasEMsg=true;
+			}
+			if(blood_glucose<bgmin){
+				msg.append("血糖略低、");
+				hasEMsg=true;
+			}else if(blood_glucose>bgmax){
+				msg.append("血糖略高、");
+				hasEMsg=true;
+			}
+			if(hasEMsg){
+				msg.append("请注意自己的身体!");
+			}else{
+				msg.append("身体状况良好，请继续保持!");
+			}
+			msg.append("</p>");
+			String tMsg=msg.toString();
+			String USER_ID=pd.getString("USER_ID");
+			if(StringUtils.isBlank(USER_ID)){
+				USER_ID=Jurisdiction.getUserId();
+			}
+			User userAndRoleById = usersService.getUserAndRoleById(USER_ID);
+
+			PageData msgPd=new PageData();
+			msgPd.put("STATUS", "2");
+			msgPd.put("SANME_ID", this.get32UUID());
+			msgPd.put("SEND_TIME", DateUtil.getTime());
+			msgPd.put("FHSMS_ID", this.get32UUID());
+			msgPd.put("TYPE", "2");
+			msgPd.put("CONTENT", tMsg);
+			msgPd.put("FROM_USERNAME",Const.ADMIN_USERNAME);
+			msgPd.put("TO_USERNAME", userAndRoleById.getUSERNAME());
+			fhsmsService.save(msgPd);
+
+			msgPd.put("FHSMS_ID", this.get32UUID());					//主键2
+			msgPd.put("TYPE", "1");									//类型1：收信
+			msgPd.put("FROM_USERNAME", userAndRoleById.getUSERNAME());				//发信人
+			msgPd.put("TO_USERNAME", Const.ADMIN_USERNAME);		//收信人
+			fhsmsService.save(msgPd);
+
+
+		/*	pd.put("SANME_ID", this.get32UUID());					//共同ID
+			pd.put("SEND_TIME", DateUtil.getTime());				//发送时间
+			pd.put("FHSMS_ID", this.get32UUID());					//主键1
+			pd.put("TYPE", "2");									//类型2：发信
+			pd.put("FROM_USERNAME", Jurisdiction.getUsername());	//发信人
+			pd.put("TO_USERNAME", arrUSERNAME[i]);					//收信人
+			fhsmsService.save(pd);									//存入发信
+
+
+			pd.put("FHSMS_ID", this.get32UUID());					//主键2
+			pd.put("TYPE", "1");									//类型1：收信
+			pd.put("FROM_USERNAME", arrUSERNAME[i]);				//发信人
+			pd.put("TO_USERNAME", Jurisdiction.getUsername());		//收信人
+			fhsmsService.save(pd);*/
+
+		}catch (Exception e){
+			e.printStackTrace();
+			errInfo="error";
+		}
+		map.put("result", errInfo);				//返回结果
+		return map;
+	}
 
 	
 }

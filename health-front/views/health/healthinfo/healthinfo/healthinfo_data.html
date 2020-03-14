@@ -13,16 +13,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="author" content="FH Admin QQ313596790" />
-		<link rel="icon" href="../../../../assets/images/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="../../../../assets/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../../../../assets/fonts/material/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="../../../../assets/fonts/fontawesome/css/fontawesome-all.min.css">
     <link rel="stylesheet" href="../../../../assets/plugins/animation/css/animate.min.css">
     <link rel="stylesheet" href="../../../../assets/css/style.css">
     <link rel="stylesheet" href="../../../../assets/css/bootstrap/bootstrap.css">
-    <link rel="stylesheet" href="../css/healthinfo_data.css">
-<!--引入弹窗组件-->
+	<!-- layui -->
+    <link rel="stylesheet" href="../../../../assets/plugins/layui/css/layui.css">
+	<!-- 自定义css -->
+	<link rel="stylesheet" href="../css/healthinfo_data.css">
+	<!--引入弹窗组件-->
     <link type="text/css" rel="stylesheet" href="../../../../plugins/fhdrag/style.css" />
 	 <script src="../../../../assets/plugins/echarts/echarts.min.js"></script>
+	<!-- 日期插件 -->
+	<link rel="stylesheet" href="../../../../assets/plugins/material-datetimepicker/css/bootstrap-material-datetimepicker.css">
 	
     <!-- vue -->
 	<script src="../../../../assets/js-vue/vue.js"></script>
@@ -55,13 +60,13 @@
                                 <div class="col-xl-12">
                                     <div class="card">
 										<!-- 检索  -->
-										<div class="card-block table-border-style" id="card-block1" >
-											<div class="data_top">
+										<div class="card-block table-border-style col-xl-12" id="card-block1" >
+											<div class="data_top col-xl-12">
 												<span>个人健康统计报表</span>
 											</div>
-											<div class="data_bottom">
-												<div class="data_left" >
-													<div class="p_info">
+											<div class="data_bottom col-xl-12">
+												<div class="data_left col-xl-3" >
+													<div class="p_info col-xl-12">
 														<div class="panel panel-default">
 														  <div class="panel-body">
 														    个人信息
@@ -114,54 +119,54 @@
 																</h4>
 														
 															</div>
-															
 														</div>
 													</div>
-													<div class="p_data_option">
+													<div class="p_data_option col-xl-12">
 														<div class="panel panel-default">
 														  <div class="panel-body">
 														    数据选项
 														  </div>
 														</div>
-														<div class="d_option">
-														  <div class="d_img" @click="getEData('HEART_RATE')">
-															  <img src="../../../../assets/images/health-info/heart_rate.png" alt="心率" title="心率">
-															  <div>
-																  <span>心率</span>
-															  </div>
-														  </div>
-														  <div class="d_img"  @click="getEData('WEIGHT')">
-															  <img src="../../../../assets/images/health-info/weight.png" alt="体重" title="体重">
-														  </div>
-														  <div class="d_img"  @click="getEData('BLOOD_PRESSURE')">
-															  <img src="../../../../assets/images/health-info/blood_pressure.png" alt="血压" title="血压">
-														  </div>
-														  <div class="d_img"  @click="getEData('BLOOD_PRESSURE')">
-															  <img src="../../../../assets/images/health-info/blood_glucose.png" alt="血糖" title="血糖">
-														  </div>
-														  <div class="d_img"  @click="getEData('SLEEP_TIME')">
-															  <img src="../../../../assets/images/health-info/sleep.png" alt="睡眠时长" title="睡眠时长">
-														  </div>
-														  <div class="d_img"  @click="getEData('STEP_NUMBER')">
-															  <img src="../../../../assets/images/health-info/foot.png" alt="运动步数" title="运动步数">
-														  </div>
-																													
+														<div class="d_option col-xl-12">
+															<div class=" col-xl-12 sonc">
+																<div class="d_img col-xl-4" @click="getEData('HEART_RATE')">
+																															  <img src="../../../../assets/images/health-info/heart_rate.png" alt="心率" title="心率">
+																</div>
+																<div class="d_img col-xl-4"  @click="getEData('WEIGHT')">
+																															  <img src="../../../../assets/images/health-info/weight.png" alt="体重" title="体重">
+																</div>
+																<div class="d_img col-xl-4"  @click="getEData('BLOOD_PRESSURE')">
+																															  <img src="../../../../assets/images/health-info/blood_pressure.png" alt="血压" title="血压">
+																</div>
+															</div>
+															<div class=" col-xl-12 sonc">
+																<div class="d_img col-xl-4"  @click="getEData('BLOOD_GLUCOSE')">
+																															  <img src="../../../../assets/images/health-info/blood_glucose.png" alt="血糖" title="血糖">
+																</div>
+																<div class="d_img col-xl-4"  @click="getEData('SLEEP_TIME')">
+																															  <img src="../../../../assets/images/health-info/sleep.png" alt="睡眠时长" title="睡眠时长">
+																</div>
+																<div class="d_img col-xl-4"  @click="getEData('STEP_NUMBER')">
+																															  <img src="../../../../assets/images/health-info/foot.png" alt="运动步数" title="运动步数">
+																</div>
+															</div>
 														</div>
 														
 													</div>
 												</div>
-												<div class="data_right" >
+												<div class="data_right col-xl-9" >
 													<div class="panel panel-default">
 													  <div class="panel-body">
 													    统计报表
 													  </div>
 													</div>
 													<div class="data_echart">
-														<div id="data_option" >
-															<button type="button" class="btn btn-info"  @click="selectThisWeek('week')">本周</button>
-															<button type="button" class="btn btn-info" @click="selectThisWeek('month')">本月</button>
-															<button type="button" class="btn btn-info" @click="selectThisWeek('year')">本年</button>
-															<button type="button" class="btn btn-info">选择时间范围</button>
+														<div id="data_option"  >
+															<div class="col-md-12 op_l">
+																<button type="button" class="btn btn-info"  @click="selectThisWeek('week')">本周</button>
+																<button type="button" class="btn btn-info" @click="selectThisWeek('month')">本月</button>
+																<button type="button" class="btn btn-info" @click="selectThisWeek('year')">本年</button>
+															</div>
 														</div>
 														<div id="main" style="width: 100%;height:95%;"></div>
 													</div>
@@ -191,7 +196,10 @@
 <script type="text/javascript" src="../../../../plugins/fhdrag/drag.js"></script>
 <script type="text/javascript" src="../../../../plugins/fhdrag/dialog.js"></script>
 <!--引入弹窗组件end-->
-
+<!-- 日期插件 -->
+<script type="text/javascript" src="../../../../assets/js/pages/moment-with-locales.min.js"></script>
+<script type="text/javascript" src="../../../../assets/plugins/material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+<script type="text/javascript" src="../../../../assets/js/pages/form-picker-custom.js"></script>
 <!-- 提示 -->
 <script type="text/javascript" src="../../../../assets/js/jquery.tips.js"></script>
 
@@ -199,6 +207,7 @@
 <script src="../../../../assets/js/jquery.tips.js"></script>
  <!-- day.js -->
 <script src="../../../../assets/js/day.js"></script>
+<script src="../../../../assets/plugins/layui/layui.all.js"></script>
 <script src="../../../../assets/js-v/health/healthinfo/healthinfo/healthinfo_data.js"></script>
 </body>
 </html>

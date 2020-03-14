@@ -1,5 +1,6 @@
 package org.fh.controller.system;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.fh.controller.base.BaseController;
@@ -90,7 +91,11 @@ public class UsersController extends BaseController {
 		String errInfo = "success";
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		User userInfo = usersService.getUserAndRoleById(pd.getString("USER_ID"));
+		String USER_ID="";
+		if(StringUtils.isBlank(pd.getString("USER_ID"))){
+			USER_ID=Jurisdiction.getUserId();
+		}
+		User userInfo = usersService.getUserAndRoleById(USER_ID);
 		map.put("userInfo",userInfo);
 		map.put("result", errInfo);
 		return map;

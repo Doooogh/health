@@ -6,6 +6,7 @@ public enum  HealthInfoEnum {
     STEP_NUMBER("STEP_NUMBER","步数","步"),
     WEIGHT("WEIGHT","体重","kg"),
     BLOOD_PRESSURE("BLOOD_PRESSURE","血压","mmHg"),
+    BLOOD_GLUCOSE("BLOOD_GLUCOSE","血糖","mmol/L"),
     SLEEP_TIME("SLEEP_TIME","睡眠时长","h");
     private String dataType; //类型
     private String name;  //名字

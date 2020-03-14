@@ -1,31 +1,27 @@
 package org.fh.controller.system;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.session.Session;
+import org.fh.controller.base.BaseController;
+import org.fh.entity.PageData;
+import org.fh.entity.system.Role;
+import org.fh.entity.system.User;
+import org.fh.service.system.FhsmsService;
+import org.fh.service.system.PhotoService;
+import org.fh.service.system.RoleService;
+import org.fh.service.system.UsersService;
+import org.fh.util.*;
+import org.fh.util.mail.SimpleMailSender;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.session.Session;
-import org.fh.controller.base.BaseController;
-import org.fh.service.system.FhsmsService;
-import org.fh.service.system.PhotoService;
-import org.fh.service.system.RoleService;
-import org.fh.service.system.UsersService;
-import org.fh.util.Const;
-import org.fh.util.IniFileUtil;
-import org.fh.util.Jurisdiction;
-import org.fh.util.PathUtil;
-import org.fh.util.Tools;
-import org.fh.util.mail.SimpleMailSender;
-import org.fh.entity.PageData;
-import org.fh.entity.system.Role;
-import org.fh.entity.system.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 
 /**
@@ -98,7 +94,7 @@ public class HeadController extends BaseController {
 			String imPort = IniFileUtil.readCfgValue(infFilePath, "SysSet1", "imPort", "8869");					//即时聊天端口
 			map.put("wimadress", imIp+":"+imPort);				//即时聊天websocket地址
 			
-			String sysName = IniFileUtil.readCfgValue(infFilePath, "SysSet1", Const.SYSNAME, "FH Admin");		//系统名称
+			String sysName = IniFileUtil.readCfgValue(infFilePath, "SysSet1", Const.SYSNAME, "健康管理系统");		//系统名称
 			map.put(Const.SYSNAME, sysName);
 			
 			map.put("fhsmsCount", fhsmsService.findFhsmsCount(Jurisdiction.getUsername()).get("fhsmsCount").toString());//站内信未读总数

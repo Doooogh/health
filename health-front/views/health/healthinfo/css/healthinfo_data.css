@@ -1,6 +1,6 @@
 	*{
 			margin: 0;
-			border: 0;
+			/* border: 0; */
 			box-sizing: border-box;
 	}
 	
@@ -58,15 +58,15 @@
 	}
 	
 	.info_detail{
-		padding : 10px 20px;
-		font-size: 19px;
+		font-size: 16px;
 	}
 	
 	.d_info{
 		width: 100%;
 		display: flex;
 		justify-content: flex-start;
-		margin-bottom: 3px;
+		margin-bottom: 5px;
+		
 		
 	}
 	.d_info div{
@@ -74,7 +74,7 @@
 	}
 	
 	.user_d_info3 h4{
-		margin-bottom: 3px;
+		margin-bottom: 5px;
 	}
 	
 	
@@ -84,21 +84,30 @@
 		display: flex;
 		justify-content:space-between;
 		flex-wrap:wrap;
-		padding: 10px 20px;
+		padding: 0;
+	}
+	.sonc{
+		height: 50%;
+		justify-content:space-between;
+		display: flex;
+		padding: 0;
 	}
 	.d_option .d_img{
-		width: 150px;
-		height: 150px;
-		border: 1px gainsboro solid;
-		background-color: ghostwhite;
+		width: 90%;
+		height: 90%;
+		
+		
 		cursor:pointer;
 		border-radius: 5px;
+		padding: 10px;
 		
 	}
 	
 	.d_img img{
 		width: 100%;
 		height: 100%;
+		border: 1px gainsboro solid;
+		background-color: ghostwhite;
 	}
 	
 	.data_echart{
@@ -109,6 +118,13 @@
 	#data_option{
 		margin-bottom: 10px;
 		padding-left: 20px;
+		height: 30px;
+	}
+	
+	.op_r{
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
 	}
 	
 	

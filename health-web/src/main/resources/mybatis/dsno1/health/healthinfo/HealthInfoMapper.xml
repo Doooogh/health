@@ -23,7 +23,8 @@
 		f.BLOOD_PRESSURE,	
 		f.SLEEP_TIME,	
 		f.OTHER_INFO,	
-		f.HEALTHINFO_ID
+		f.HEALTHINFO_ID,
+		f.BLOOD_GLUCOSE
 	</sql>
 	
 	<!-- 字段用于新增 -->
@@ -37,7 +38,8 @@
 		BLOOD_PRESSURE,	
 		SLEEP_TIME,	
 		OTHER_INFO,	
-		HEALTHINFO_ID
+		HEALTHINFO_ID,
+		BLOOD_GLUCOSE
 	</sql>
 	
 	<!-- 字段值 -->
@@ -51,7 +53,8 @@
 		#{BLOOD_PRESSURE},	
 		#{SLEEP_TIME},	
 		#{OTHER_INFO},	
-		#{HEALTHINFO_ID}
+		#{HEALTHINFO_ID},
+		#{BLOOD_GLUCOSE}
 	</sql>
 	
 	<!-- 新增-->
@@ -85,7 +88,8 @@
 			WEIGHT = #{WEIGHT},
 			BLOOD_PRESSURE = #{BLOOD_PRESSURE},
 			SLEEP_TIME = #{SLEEP_TIME},
-			OTHER_INFO = #{OTHER_INFO}
+			OTHER_INFO = #{OTHER_INFO},
+			BLOOD_GLUCOSE=#{BLOOD_GLUCOSE}
 		where 
 			HEALTHINFO_ID = #{HEALTHINFO_ID}
 	</update>
